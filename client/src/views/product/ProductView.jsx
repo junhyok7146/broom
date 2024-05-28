@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Title from '@/components/layout/Title'
 import ProductCategory from '@/components/product/ProductCategory'
 import ProductSection from '@/components/product/ProductSection'
 import { useLocation } from 'react-router-dom'
@@ -25,7 +24,6 @@ const ProductView = () => {
 
     return (
         <div className="row">
-            <Title title="Product" />
             <ProductCategory changeTitle={changeTitle} title={title} />
             <ProductSection title={title} />
         </div>

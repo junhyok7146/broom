@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components'
-import Title from '@/components/layout/Title'
 import CartSection from '@/components/cart/CartSection'
 
 const CartViewBlock = styled.div`
@@ -9,7 +8,6 @@ const CartViewBlock = styled.div`
 const CartView = () => {
     return (
         <CartViewBlock>
-            <Title title="Cart" />
             <CartSection />
         </CartViewBlock>
     );
