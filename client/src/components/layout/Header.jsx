@@ -1,176 +1,236 @@
-import React, {useEffect, useState} from 'react';
-import cn from 'classnames'
-import {useNavigate} from 'react-router-dom'
-import { FaBars, FaRegUser } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
-import styled from 'styled-components'
-import { Link, NavLink } from 'react-router-dom'
-import { BsCartPlusFill  } from "react-icons/bs";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {initCarts } from '@/store/product'
-import { userLogout, localUser } from '@/store/member'
-import { useMediaQuery } from 'react-responsive'
-import axios from 'axios'
+import { initCarts } from '@/store/product';
+import { userLogout, localUser } from '@/store/member';
+import axios from 'axios';
+import logo from '@/assets/image/logo.png';
+import { FaBars } from "react-icons/fa6";
+import { GiBroom } from "react-icons/gi";
+import { IoClose } from "react-icons/io5";
+import cn from 'classnames';
 
 const HeaderBlock = styled.div`
   text-align: center;
-  padding: 20px;
-  background: #ddd;
-  position: relative;
-  .header__logo { padding: 20px; }
-  .member { position: absolute; top: 30px; left: 30px;
-    a { margin-right: 10px; }
+  background-color: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999999;
+  
+  .header__logo { padding: 15px 45px; float: left; }
   }
-  .itemcount { position: absolute; top: 20px; right: 30px;
-    font-size: 30px; color: blue;
-    span { position: absolute; top: -2px; right: -5px; width: 20px;
-      height: 20px; border-radius: 50%; background: red; color: #fff;
-      font-size: 12px; line-height: 20px; text-align: center; font-weight: bold;
-    }
+  
+  .NAV {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    padding: 30px;
   }
-  .openNav { position: absolute; top: 20px; right: 80px; font-size: 30px; color: blue;
-    cursor: pointer; display: none; }
-  #header__nav { 
-    ul {
-      display: flex;
-      justify-content: space-around;
-      li { margin: 10px 0px; font-size: 20px;
-        a { transition: all 0.5s;
-          &:hover, &.active { color: #f00; }
-        }
-      }
-    }
-    .closeNav { display: none; }
+  
+  .depth1 {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
   }
-`
-
-const ItemCount = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 30px;
-  color: blue;
-  span {
-    position: absolute;
-    top: -2px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: red;
+  
+  .depth1 li {
+    padding: 10px 20px;
+    cursor: pointer;
     color: #fff;
-    font-size: 12px;
-    line-height: 20px;
-    text-align: center;
     font-weight: bold;
+    font-size: 19px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-`
+  
+  .depth2 {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #0059e9;
+    padding: 5px;
+    color: #fff;
+    min-width: 200px;
+    font-size: 16px;
+    text-align: center;
+    a {
+      display: block;
+    }
+  }
+  
+  .depth1:hover .depth2 {
+    display: block;
+  }
+  
+  .btn {
+    background: #0059e9;
+    border-radius: 50px;
+  }
+  
+  .btn:hover {
+    background: #000;
+  }
+  
+  .closeNav {
+    position: fixed;
+    top: 0;
+    right: -999%;
+    width: 700px;
+    height: 100%;
+    background: #0059e9;
+    transition: right 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    &.open {
+      right: 0;
+    }
+  }
+  
+  .closeNavIcon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000000;
+  }
 
-const Hamburger = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 110px;
-  font-size: 30px;
-  color: blue;
-`
+  .openDepth1 li {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    font-size: 40px;
+  }
 
-const MyOrder = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 70px;
-  font-size: 30px;
-  color: blue;
-`
+  .openDepth2 {
+    display: none;
+    padding: 5px;
+    color: #fff;
+    min-width: 200px;
+    font-size: 16px;
+    text-align: center;
+    &.show {
+      display: block;
+    }
 
-const MobileNav = styled.nav`
-`
+  }
+`;
 
 const Header = () => {
-    const navigate = useNavigate()
-    const mobile = useMediaQuery({ maxWidth:768 })
-    const [openNav, setOpenNav] = useState(false)
+  const navigate = useNavigate();
+  const [openNav, setOpenNav] = useState(false);
+  const [openSubMenu, setOpenSubMenu] = useState(null);
 
-    const dispatch = useDispatch()
-    const user = useSelector(state=>state.members.user)
-    const cartsCount = useSelector(state=>state.products.cartsCount)
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.members.user);
+  const cartsCount = useSelector((state) => state.products.cartsCount);
 
-    const handleLogout = (e)=>{
-      e.preventDefault()
-      dispatch(userLogout())
-      dispatch(initCarts([]))
-      navigate("/")
-    }
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch(userLogout());
+    dispatch(initCarts([]));
+    navigate("/");
+  };
 
-    useEffect(()=>{
-      if (localStorage.getItem('loging')) {
-        const {userNo} = JSON.parse(localStorage.getItem('loging'))
-        axios.post("http://localhost:8001/auth/refresh", {userNo})
-        .then((res)=>{
-           dispatch(localUser(res.data[0]))
+  useEffect(() => {
+    if (localStorage.getItem('loging')) {
+      const { userNo } = JSON.parse(localStorage.getItem('loging'));
+      axios.post("http://localhost:8001/auth/refresh", { userNo })
+        .then((res) => {
+          dispatch(localUser(res.data[0]));
         })
-        .catch(err=>console.log(err))
-      } 
-    }, [dispatch, cartsCount])
+        .catch((err) => console.log(err));
+    }
+  }, [dispatch, cartsCount]);
 
-    return (
-        <HeaderBlock>
-            <h1 className="header__logo">
-                <Link to="/">STARSHIP SQUARE</Link>
-            </h1>
-            { user ?
-              <div className="member">
-                <a href="#" onClick={ handleLogout }>로그아웃</a>
-                <Link to="/memberModify">정보수정({user.userId})</Link>
-              </div>
-              :
-              <div className="member">
-                  <Link to="/login">로그인</Link>
-                  <Link to="/join">회원가입</Link>
-              </div>
-            }
-            { mobile &&
-              <Hamburger onClick={()=>setOpenNav(true)}>
-                <FaBars />
-              </Hamburger> 
-            }
-            <ItemCount>
-              <Link to="/cart">
-                <BsCartPlusFill />
-                { cartsCount ? <span>{ cartsCount }</span> : ""}
-              </Link>
-            </ItemCount>
-            <MyOrder>
-              <Link to="/myOrder">
-                <FaRegUser />
-              </Link>
-            </MyOrder>
-            { mobile ||
-              <nav id="header__nav">
-                  <ul>
-                      <li>
-                          <NavLink to="/product" state={{ page:1, category:'all'}}>Product</NavLink>
-                      </li>
-                      <li>
-                          <NavLink to="/boardList" state={{page:1}}>Community</NavLink>
-                      </li>
-                  </ul>
-              </nav>
-            }
-            { mobile &&
-              <MobileNav className={ openNav && "on"}>
-                <MdClose className={cn("closeNav", openNav && "on")} onClick={()=>setOpenNav(false)} />
-                <ul className={ openNav && "on"}>
-                    <li>
-                        <NavLink to="/product">Product</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/boardList">Community</NavLink>
-                    </li>
+  const toggleSubMenu = (index) => {
+    setOpenSubMenu(openSubMenu === index ? null : index);
+  };
+
+  return (
+    <HeaderBlock>
+      <h1 className="header__logo">
+        <Link to="/"><img src={logo} alt="" /></Link>
+      </h1>
+      <div className='NAV'>
+        <ul className='depth1'>
+          <li>나의 부름
+            <ul className='depth2'>
+              <li>완료내역</li>
+              <li>청소현황</li>
+              <li>마이 페이지</li>
+            </ul>
+          </li>
+        </ul>
+        <ul className='depth1'>
+          <li>고객센터
+            <ul className='depth2'>
+              <li>자주 묻는 질문</li>
+            </ul>
+          </li>
+        </ul>
+        <ul className='depth1'>
+          <li>마스터
+          <ul className='depth2'>
+              <li>로그인</li>
+              <li>회원가입</li>
+            </ul>
+          </li>
+        </ul>
+        <ul className='depth1'>
+          <li className='btn'><Link to=""><GiBroom />청소 부름</Link></li>
+        </ul>
+        <ul className='depth1'>
+          <li style={{ color: "#0059e9", fontSize: "30px" }} onClick={() => setOpenNav(true)}><FaBars /></li>
+        </ul>
+        <div className={cn('closeNav', openNav && 'open')}>
+          <IoClose className="closeNavIcon" onClick={() => setOpenNav(false)} />
+          <div>
+            <ul className='openDepth1' onClick={() => toggleSubMenu(1)}>
+              <li>나의 부름
+                <ul className={cn('openDepth2', openSubMenu === 1 && 'show')}>
+                  <li style={{fontSize:"20px"}}><Link>완료내역</Link></li>
+                  <li style={{fontSize:"20px"}}><Link>청소현황</Link></li>
+                  <li style={{fontSize:"20px"}}><Link>마이 페이지</Link></li>
                 </ul>
-              </MobileNav>
-            }
-        </HeaderBlock>
-    );
+              </li>
+            </ul>
+            <ul className='openDepth1' onClick={() => toggleSubMenu(2)}>
+              <li>고객센터
+                <ul className={cn('openDepth2', openSubMenu === 2 && 'show')}>
+                  <li style={{fontSize:"20px"}}><Link>자주 묻는 질문</Link></li>
+                </ul>
+              </li>
+            </ul>
+            <ul className='openDepth1' onClick={() => toggleSubMenu(3)}>
+              <li>마스터
+                <ul className={cn('openDepth2', openSubMenu === 3 && 'show')}>
+                  <li style={{fontSize:"20px"}}><Link>로그인</Link></li>
+                  <li style={{fontSize:"20px"}}><Link>회원가입</Link></li>
+                </ul>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <a href='#'>카카오톡으로 문의하기</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </HeaderBlock>
+  );
 };
 
 export default Header;
