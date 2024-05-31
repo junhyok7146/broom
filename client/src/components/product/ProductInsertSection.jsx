@@ -194,17 +194,29 @@ const ProductInsertSection = () => {
         productType: "기본형",
         description: "",
         photo: "",
-        qty: 1
+        qty: 1,
+        price: 0,
     });
-
+    const [totalPrice, setTotalPrice] = useState(0);
     const mAddressSubRef = useRef("");
     const [photoValue, setPhotoValue] = useState("");
-
     const handleChange = (e) => {
         const { value, name } = e.target;
+        if(name== 'homeType'){
+            let homeTypePrice = 0;
+        if (name === 'homeType') {
+            if (value === '다세대·다가구') {
+                homeTypePrice = 150000;
+            } else if (value === '오피스텔·도시형생활주택') {
+                homeTypePrice = 100000;
+            } else if (value === '아파트') {
+                homeTypePrice = 300000;
+            }
+        }
+        setTotalPrice(homeTypePrice)
+        }
         setProduct(product => ({ ...product, [name]: value }));
     };
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setProduct(prevProduct => ({ ...prevProduct, photo: file }));
@@ -223,6 +235,7 @@ const ProductInsertSection = () => {
         formData.append("description", product.description);
         formData.append("productType", product.productType);
         formData.append("qty", product.qty);
+        formData.append("price", totalPrice);
         if (product.photo) {
             formData.append("photo", product.photo);
         }
@@ -243,9 +256,10 @@ const ProductInsertSection = () => {
                     productType: "기본형",
                     description: "",
                     qty:1,
-                    photo: "",
+                    price: 0,
+                    photo: ""
                 });
-                setPhotoValue("");
+                setPhotoValue();
             } else {
                 alert("상품등록 실패");
                 return;
@@ -283,11 +297,17 @@ const ProductInsertSection = () => {
             },
         }).open();
     };
-
     const handleProductTypeClick = (type) => {
-        setProduct(prevProduct => ({ ...prevProduct, productType: type }));
+        let priceDifference = 0;
+        if (type === '고급형') {
+            priceDifference = 400000 - (product.productType === '고급형' ? 400000 : 200000);
+        } else {
+            priceDifference = 200000 - (product.productType === '고급형' ? 400000 : 200000);
+        }
+        setProduct(prevProduct => ({ ...prevProduct, productType: type}));
+        setTotalPrice(totalPrice + priceDifference);
     };
-
+        
     return (
         <ProductInsertSectionBlock>
             <div className='title'>
@@ -345,6 +365,9 @@ const ProductInsertSection = () => {
                 </div>
                 <div className="btn">
                     <button type="submit">등록</button>
+                </div>
+                <div>
+                    예상금액 {totalPrice}
                 </div>
             </form>
         </ProductInsertSectionBlock>
