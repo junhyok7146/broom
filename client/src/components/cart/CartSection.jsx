@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
 import {useSelector, useDispatch } from 'react-redux'
 import {useNavigate} from 'react-router-dom'
+import axios from 'axios'
+import {fetchCart} from '@/store/product'
 
+const CartSectionBlock = styled.div`
+    padding-top: 100px;
+`
 const TableBlock = styled.table`
 col:nth-child(1) { width: 50px; }
 col:nth-child(2) { width: 100px; }
@@ -61,11 +66,7 @@ const CartSection = () => {
     // 각 제품에 대한 수량 상태를 관리하기 위한 상태
     const [quantityValues, setQuantityValues] = useState({});
     
-    const onChange = (e, id, inventory) => {
-        setQuantityValues(prevState => ({
-            ...prevState,
-            [id]: newQty
-        }));
+    const onChange = (e, cNo, inventory) => {
         let newQty = parseInt(e.target.value)
         if (newQty<1) {
             newQty = 1
@@ -73,12 +74,19 @@ const CartSection = () => {
         if (newQty>inventory) {
             newQty = inventory
         }
+        setQuantityValues(prevState => ({
+            ...prevState,
+            [cNo]: newQty
+        }));
         if (user) {
-            cartDB.child(user.key).child(id).update({ qty: newQty })
-            .then(() => {
-                console.log('수량이 업데이트되었습니다.');
-                dispatch(fetchProducts());
-                dispatch(fetchCarts())
+            axios.get(`http://localhost:8001/product/cartQtyUpdate?cartNo=${cNo}&qty=${newQty}`)
+            .then((res) => {
+                if (res.data.affectedRows==1) {
+                    console.log("장바구니 수량 업데이트 성공")
+                    dispatch(fetchCart(user.userNo))
+                } else {
+                    console.log("장바구니 수량 업데이트 실패")
+                }
             })
             .catch((error) => {
                 console.error('수량 업데이트 중 오류 발생:', error);
@@ -86,16 +94,21 @@ const CartSection = () => {
         } 
     }
 
-    const removeCartItem = (id)=>{
+    const removeCartItem = (cNo)=>{
         if (user) {
-            cartDB.child(user.key).child(id).remove()
-            .then(() => {
-                setTempProducts(prevTempProducts => prevTempProducts.filter(item => item.product.id !== id));
+            axios.get(`http://localhost:8001/product/cartItemRemove?cartNo=${cNo}`)
+            .then((res) => {
+                if (res.data.affectedRows==1) {
+                    console.log("장바구니 아이템 삭제 성공")
+                    dispatch(fetchCart(user.userNo))
+                    console.log(user.userNo)
+                } else {
+                    console.log("장바구니 아이템 삭제 실패")
+                }
             })
             .catch((error) => {
                 console.error('삭제 중 오류 발생:', error);
             });
-            dispatch(fetchCarts())
         } 
     }
 
@@ -106,7 +119,7 @@ const CartSection = () => {
             sessionStorage.setItem('previousUrl', '/cart');
             navigate("/login")
         } else {
-            navigate("/payment", {state:{product:tempProducts}})
+            navigate("/payment", {state:{product: carts, path:'cart'}})
         }
     }
 
@@ -128,21 +141,28 @@ const CartSection = () => {
             sessionStorage.setItem('previousUrl', '/cart');
             navigate("/login")
         } else {
-            const selectedProductsData = tempProducts.filter(item => selectedProducts.includes(item.product.id));
-            navigate("/payment", {state:{product:selectedProductsData}})
+            const selectedProductsData = carts.filter(item => selectedProducts.includes(item.prNo));
+            navigate("/payment", {state:{product:selectedProductsData, path:'cart'}})
         }
     }
-
+    useEffect(() => {
+        if (user) {
+          dispatch(fetchCart(user.userNo));
+        }
+      }, [dispatch, user]);
 
     useEffect(() => {
         if (carts.length) {
             setTotal(carts.reduce((acc, item)=>acc+(parseInt(item.price) * parseInt(item.qty)), 0))
             setAllCount(carts.reduce((acc, item)=>acc+(parseInt(item.qty)), 0))
-        } 
+        } else {
+            setTotal(0)
+            setAllCount(0)
+        }
     }, [carts]);
 
     return (
-        <div>
+        <CartSectionBlock>
             <TableBlock border="1">
                 <colgroup>
                     <col />
@@ -171,16 +191,16 @@ const CartSection = () => {
                                         <img src={`http://localhost:8001/uploads/${item.photo}`} alt={item.name} />
                                     </td>
                                     <td>
-                                        { item.name } ({parseInt(item.price).toLocaleString()})
+                                        { item.name }
                                     </td>
                                     <td>
-                                        <input type="number" value={quantityValues[item.prNo] || item.qty}  onChange={ (e)=>onChange(e, item.prNo, item.inventory) } />
+                                    <input type="number" value={quantityValues[item.cartNo] || item.qty}  onChange={ (e)=>onChange(e, item.cartNo, item.inventory) } />
                                     </td>
                                     <td>
                                         { (parseInt(item.price) * parseInt(item.qty)).toLocaleString() }
                                     </td>
                                     <td>
-                                        <button type="button" onClick={ ()=>removeCartItem(item.cartNo) }>삭제</button>
+                                        <button type="button" onClick={ ()=>removeCartItem(item.cartNo)}>삭제</button>
                                     </td>
                                 </tr>
                             ))
@@ -210,7 +230,7 @@ const CartSection = () => {
                 <button type="button" onClick={ partBuy }>선택상품 주문하기</button>
                 <button type="button" onClick={ allBuy }>전체상품 주문하기</button>
             </Button>
-        </div>
+        </CartSectionBlock>
     );
 };
 

@@ -10,35 +10,50 @@ const ProductSectionBlock = styled.div``;
 
 const UlBlock = styled.ul`
     border: 0px solid #000;
-    list-style:none; 
-    margin-top:50px; 
+    list-style: none;
+    margin-top: 50px;
 `;
+
 const ListBlock = styled.li`
     flex: 0 0 21%;
     margin: 20px 2%;
 `;
 
 const LoadingBlock = styled.div`
-    display:flex; justify-content:center; 
-    margin:100px 0; 
+    display: flex;
+    justify-content: center;
+    margin: 100px 0;
 `;
 
 const ButtonBlock = styled.div`
     button {
-        margin:50px 5px; padding:5px 10px; 
-        &.on { background:red; color:#fff }
+        margin: 50px 5px;
+        padding: 5px 10px;
+        &.on {
+            background: red;
+            color: #fff;
+        }
     }
 `;
+
 const ProductInsert = styled.div`
-    text-align:center;
-    margin:50px 0;
-    a { padding:10px 20px; background:#999; }
+    text-align: center;
+    margin: 50px 0;
+    a {
+        padding: 10px 20px;
+        background: #999;
+    }
 `;
 
 const PageButton = styled.div`
-    text-align:center;
-    button { padding:5px 10px; background:#ddd; margin:20px 5px;
-        &.on { background:red }
+    text-align: center;
+    button {
+        padding: 5px 10px;
+        background: #ddd;
+        margin: 20px 5px;
+        &.on {
+            background: red;
+        }
     }
 `;
 
@@ -46,17 +61,17 @@ const ProductSection = ({ title }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const user = useSelector(state => state.members.user);
-    const carts = useSelector(state => state.products.carts);
-    const allData = useSelector(state => state.products.products);
-    const currentPage = useSelector(state => state.products.currentPage);
-    const totalCount = useSelector(state => state.products.totalCount);
+    const user = useSelector((state) => state.members.user);
+    const carts = useSelector((state) => state.products.carts);
+    const allData = useSelector((state) => state.products.products);
+    const currentPage = useSelector((state) => state.products.currentPage);
+    const totalCount = useSelector((state) => state.products.totalCount);
     const totalPages = Math.ceil(totalCount / 12);
     const [products, setProducts] = useState(null);
 
     const sortType = [
         { type: 'name', text: '상품명순' },
-        { type: 'price', text: '가격순' }
+        { type: 'price', text: '가격순' },
     ];
 
     const [changeSort, setChangeSort] = useState("");
@@ -69,12 +84,12 @@ const ProductSection = ({ title }) => {
         if (!sortFlag.current) {
             setProducts((products) => {
                 let sortProducts = [...products];
-                return sortProducts.sort((a, b) => a[keyname] < b[keyname] ? -1 : 1);
+                return sortProducts.sort((a, b) => (a[keyname] < b[keyname] ? -1 : 1));
             });
         } else {
             setProducts((products) => {
                 let sortProducts = [...products];
-                return sortProducts.sort((a, b) => a[keyname] > b[keyname] ? -1 : 1);
+                return sortProducts.sort((a, b) => (a[keyname] > b[keyname] ? -1 : 1));
             });
         }
         sortFlag.current = !sortFlag.current;
@@ -89,24 +104,24 @@ const ProductSection = ({ title }) => {
         }
     }
 
-    const addToCart = async (no) => {
+    const addToCart = async (no)=>{
         if (user) {
-            axios.post("http://localhost:8001/product/cart", { prNo: no, userNo: user.userNo, qty: 1 })
-                .then((res) => {
-                    if (res.data.affectedRows!=0) {
-                        console.log("장바구니 담기 성공");
-                        dispatch(fetchCart(user.userNo))
-                    } else {
-                        console.log("장바구니 담기 실패");
-                    }
-                })
-                .catch(err => console.log(err));
+            axios.post("http://localhost:8001/product/cart", {prNo:no, userNo:user.userNo, qty:1 })
+            .then((res)=>{
+                if (res.data.affectedRows!=0) {
+                    console.log("장바구니 담기 성공")
+                    dispatch(fetchCart(user.userNo))
+                } else {
+                    console.log("장바구니 담기 실패")
+                }
+            })
+            .catch(err=>console.log(err))
         } else {
-            alert("로그인을 해주세요.");
+            alert("로그인을 해주세요.")
             sessionStorage.setItem('previousUrl', '/product');
-            navigate("/login");
+            navigate("/login")
         }
-    };
+    }
 
     const renderPageButtons = () => {
         const startPage = Math.floor((currentPage - 1) / 10) * 10 + 1;
@@ -142,9 +157,6 @@ const ProductSection = ({ title }) => {
 
     useEffect(() => {
         dispatch(fetchProduct(currentPage, title));
-        // if (user) {
-        //     dispatch(fetchCart(user.userNo));
-        // }
     }, [dispatch, currentPage, title]);
 
     useEffect(() => {
@@ -166,48 +178,63 @@ const ProductSection = ({ title }) => {
     return (
         <ProductSectionBlock>
             <ButtonBlock>
-                {
-                    sortType.map((item, index) => (
-                        <button key={index} onClick={() => { setChangeSort(item.type); sortProduct(item.type); }} className={changeSort == item.type && "on"}>{item.text}</button>
-                    ))
-                }
+                {sortType.map((item, index) => (
+                    <button
+                        key={index}
+                        onClick={() => {
+                            setChangeSort(item.type);
+                            sortProduct(item.type);
+                        }}
+                        className={changeSort === item.type ? "on" : ""}
+                    >
+                        {item.text}
+                    </button>
+                ))}
             </ButtonBlock>
             <UlBlock>
-                {
-                    products.map((item, index) => (
+                {products.map((item, index) => {
+                    const remainingQty = item.qty - cartIdCount(item.prNo);
+                    return (
                         <ListBlock key={index}>
                             <div className="photo">
-                                <Link to={`/product/${item.prNo}`} state={{ item: item }}><img src={`http://localhost:8001/uploads/${item.photo}`} alt={item.name} /></Link>
+                                <Link to={`/product/${item.prNo}`} state={{ item: item }}>
+                                    <img
+                                        src={`http://localhost:8001/uploads/${item.photo}`}
+                                        alt={item.name}
+                                    />
+                                </Link>
                             </div>
                             <div className="info">
-                                <p><a href="#">{item.name}</a></p>
+                                <p>
+                                    <a href="#">{item.name}</a>
+                                </p>
                                 <p>{item.addr1}</p>
                                 <p>{item.homeType}</p>
                                 <p>{item.productType}</p>
-                                {item.qty != cartIdCount(item.prNo) ?
+                                <p>{item.price}</p>
+                                {item.qty !== cartIdCount(item.prNo) ? (
                                     <>
-                                        <button onClick={() => addToCart(item.prNo)}><BsCartPlusFill /></button>
-                                        <span>{item.qty - cartIdCount(item.prNo)}개 남았습니다.</span>
+                                        <button onClick={() => addToCart(item.prNo)}>
+                                            <BsCartPlusFill />
+                                        </button>
+                                        {remainingQty === 1 && (
+                                            <span>신청대기중</span>
+                                        )}
                                     </>
-                                    :
+                                ) : (
                                     <>
-                                        <button><BsCartPlus /></button>
+                                        <button>
+                                            <BsCartPlus />
+                                        </button>
                                         <span>예약완료</span>
                                     </>
-                                }
+                                )}
                             </div>
                         </ListBlock>
-                    ))
-                }
+                    );
+                })}
             </UlBlock>
-            <PageButton className="pagebutton">
-                {renderPageButtons()}
-            </PageButton>
-            {(user && user.userId == 'tsalt@hanmail.net') &&
-                <ProductInsert>
-                    <Link to="/productInsert">상품등록</Link>
-                </ProductInsert>
-            }
+            <PageButton className="pagebutton">{renderPageButtons()}</PageButton>
         </ProductSectionBlock>
     );
 };
