@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { FaGoogle, FaGithub } from "react-icons/fa";
@@ -10,7 +10,8 @@ import { userLogin } from '@/store/member';
 import { fetchCart } from '@/store/product'
 
 const LoginSectionBlock = styled.div`
-    max-width:600px; margin:50px auto; 
+    max-width:600px; margin:50px auto;
+    padding-top: 110px;
     table { 
         col:nth-child(1) { width:150px }
         col:nth-child(2) { width:auto }
@@ -20,7 +21,7 @@ const LoginSectionBlock = styled.div`
                 text-indent:1em; }
         }
     }
-    .btn { text-align:center; margin-top:20px; 
+    .btn2 { text-align:center; margin-top:20px; 
         button { padding:10px; background:red; color:#fff;  }
     }
     .snslogin { padding:50px 50px 50px 150px; 
@@ -105,8 +106,11 @@ const LoginSection = () => {
                         </tr>
                     </tbody>
                 </table>
-                <div className="btn">
+                <div className="btn2">
                     <button type="submit">로그인</button>
+                </div>
+                <div className='btn2'>
+                   <Link to="/join">회원가입</Link>
                 </div>
             </form>
             <div className="snslogin">

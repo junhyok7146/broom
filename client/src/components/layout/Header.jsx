@@ -48,6 +48,7 @@ const HeaderBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 40px;
   }
   
   .depth2 {
@@ -61,6 +62,10 @@ const HeaderBlock = styled.div`
     min-width: 200px;
     font-size: 16px;
     text-align: center;
+    li.member {
+      display: flex;
+      flex-direction: column;
+    }
     a {
       display: block;
     }
@@ -142,7 +147,6 @@ const Header = () => {
     dispatch(initCarts([]));
     navigate("/");
   };
-
   useEffect(() => {
     if (localStorage.getItem('loging')) {
       const { userNo } = JSON.parse(localStorage.getItem('loging'));
@@ -164,6 +168,18 @@ const Header = () => {
         <Link to="/"><img src={logo} alt="" /></Link>
       </h1>
       <div className='NAV'>
+      <ul className='depth1'>
+          { user ?
+                <li className="member">
+                  <a href="#" onClick={ handleLogout }>로그아웃</a>
+                  <Link to="/memberModify">정보수정({user.userId})</Link>
+                </li>
+                :
+                <li className="member">
+                    <Link to="/login">로그인</Link>
+                </li>
+              }
+        </ul>
         <ul className='depth1'>
           <li>나의 부름
             <ul className='depth2'>
@@ -181,15 +197,15 @@ const Header = () => {
           </li>
         </ul>
         <ul className='depth1'>
-          <li>마스터
-          <ul className='depth2'>
-              <li>로그인</li>
-              <li>회원가입</li>
+          <li><Link to="/product">마스터</Link>
+            <ul className='depth2'>
+              <li><Link to="/product">신청 현황</Link></li>
+              <li>예약 관리</li>
             </ul>
           </li>
         </ul>
         <ul className='depth1'>
-          <li className='btn'><Link to=""><GiBroom />청소 부름</Link></li>
+          <li className='btn'><Link to="/productApply"><GiBroom />청소 부름</Link></li>
         </ul>
         <ul className='depth1'>
           <li style={{ color: "#0059e9", fontSize: "30px" }} onClick={() => setOpenNav(true)}><FaBars /></li>
@@ -216,8 +232,8 @@ const Header = () => {
             <ul className='openDepth1' onClick={() => toggleSubMenu(3)}>
               <li>마스터
                 <ul className={cn('openDepth2', openSubMenu === 3 && 'show')}>
-                  <li style={{fontSize:"20px"}}><Link>로그인</Link></li>
-                  <li style={{fontSize:"20px"}}><Link>회원가입</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/login">로그인</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/join">회원가입</Link></li>
                 </ul>
               </li>
             </ul>

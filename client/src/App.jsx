@@ -5,6 +5,7 @@ import HomeView from '@/views/HomeView'
 import ProductView from '@/views/product/ProductView'
 import ProductDetailView from '@/views/product/ProductDetailView'
 import ProductModifyView from '@/views/product/ProductModifyView'
+import ProductApply from '@/views/product/ProductApplyView'
 import CartView from '@/views/product/CartView'
 import ProductInsertView from '@/views/product/ProductInsertView'
 import LoginView from '@/views/member/LoginView'
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/product" element={ <ProductView />} />
         <Route path="/product/:id" element={ <ProductDetailView />} />
         <Route path="/productModify" element={ <ProductModifyView /> } />
+        <Route path="/productApply" element={ <ProductApply /> } />
         <Route path="/cart" element={ <CartView />} />
         <Route path="/productInsert" element={ <ProductInsertView />} />
         <Route path="/login" element={ <LoginView /> } />

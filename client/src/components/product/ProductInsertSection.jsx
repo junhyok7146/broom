@@ -1,115 +1,343 @@
-import React, {useState} from 'react';
-import styled from 'styled-components'
-import axios from 'axios'
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
 
 const ProductInsertSectionBlock = styled.div`
-    max-width:500px; margin:0 auto;
-    div {
-        display:flex; padding:5px; margin:5px; 
-        label { width:100px; display:inline-block; }
-        input, select, textarea { flex:1;  border:1px solid #000; }
-        input[type=text], input[type=number] { height:30px; padding:5px }
-        input[type=file] { border:none }
-        select { height:30px; }
-        textarea { height:200px; padding:5px }
-        &.btn {
-            justify-content:center; margin-top:20px; 
-            button { padding:10px 20px; background:red  }
+    max-width: 500px; margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    .title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        h2 {
+            font-size: 40px;
+        }
+        p {
+            color: #d8d8d8;
         }
     }
-`
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+        .time {
+            display: flex;
+            height: 50px;
+            select {
+                flex:1;
+                background: #0059e9;
+                color: #fff;
+                border-radius: 4px;
+                border: none;
+                appearance: none;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                outline: none;
+                cursor: pointer;
+                text-align: center;
+            }
+            option {
+                background: #fff;
+                color: #000;
+            }
+        }
+        .getName {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            label {
+                font-size: 18px;
+            }
+            input {
+                width: 100%;
+                height: 50px;
+                background: #fafafa;
+                border-radius: 4px;
+                padding: 0 30px;
+                &:focus{
+                    outline: 2px solid #0059e9;
+                }
+            }
+        }
+        .address {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            label {
+                font-size: 18px;
+            }
+            .postNo {
+                display: flex;
+                width: 100%;
+                height: 50px;
+                input {
+                    flex: 1 80%;
+                    background: #fafafa;
+                    border-radius: 4px;
+                    padding: 0 30px;
+                    &:focus{
+                        outline: 2px solid #0059e9;
+                    }
+                }
+                button {
+                    flex: 1 20%;
+                    border-radius: 4px;
+                    background: #0059e9;
+                    color: #fff;
+                }
+            }
+            .addr1 {
+                width: 100%;
+                input {
+                    width: 100%;
+                    height: 50px;
+                    background: #fafafa;
+                    border-radius: 4px;
+                    padding: 0 30px;
+                    &:focus{
+                        outline: 2px solid #0059e9;
+                    }
+                }
+            }
+            .addr2 {
+                width: 100%;
+                input {
+                    width: 100%;
+                    height: 50px;
+                    background: #fafafa;
+                    border-radius: 4px;
+                    padding: 0 30px;
+                    &:focus{
+                        outline: 2px solid #0059e9;
+                    }
+                }
+            }
+        }
+        .homeType {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            select {
+                width: 100%;
+                height: 50px;
+                background: #0059e9;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                appearance: none;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                outline: none;
+                cursor: pointer;
+                text-align: center;
+            }
+            option{
+                background: #fff;
+                color: #000;
+            }
+        }
+        .serviceType{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            button {
+                padding: 10px 30px;
+                border-radius: 4px;
+            }
+            button.selected { background: #0059e9; color: #fff; }
+        }
+        .description {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+
+            textarea {
+                width: 500px;
+                height: 200px;
+                border-radius: 5px;
+                border: 1px solid #0059e9;
+                padding: 20px;
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+        .btn {
+            display: flex;
+            justify-content: center;
+            button{
+                background:#0059e9;
+                padding: 10px 30px;
+                color: #fff;
+                border-radius: 4px;
+            }
+        }
+    }
+`;
 
 const ProductInsertSection = () => {
-
     const [product, setProduct] = useState({
-        category:"woman",
-        name:"",
-        price:"",
-        description:"",
-        inventory:"",
-        photo:"",
-    })
+        category: "no_select",
+        name: "",
+        zipCode: "",
+        addr1: "",
+        addr2: "",
+        homeType: "no_select",
+        productType: "기본형",
+        description: "",
+        photo: "",
+        qty: 1
+    });
 
-    const [photoValue, setPhotoValue] = useState("")
+    const mAddressSubRef = useRef("");
+    const [photoValue, setPhotoValue] = useState("");
 
-    const handleChange = (e)=>{
-        console.log(e)
-        const {value, name} = e.target
-        setProduct(product=>({...product, [name]:value }))
-    }
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0]; // 선택된 파일
-        console.log(file)  // 선택파일에 대한 모든 정보(사이즈, 이름 등)
-        setProduct((prevProduct) => ({...prevProduct, photo: file }));
-        setPhotoValue(e.target.value)
+    const handleChange = (e) => {
+        const { value, name } = e.target;
+        setProduct(product => ({ ...product, [name]: value }));
     };
 
-    const onSubmit = async (e)=>{
-        e.preventDefault()
-        console.log(product)
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setProduct(prevProduct => ({ ...prevProduct, photo: file }));
+        setPhotoValue(e.target.value);
+    };
 
+    const onSubmit = async (e) => {
+        e.preventDefault();
         const formData = new FormData();
-        formData.append("category", product.category)
+        formData.append("category", product.category);
         formData.append("name", product.name);
-        formData.append("price", product.price);
+        formData.append("zipCode", product.zipCode);
+        formData.append("addr1", product.addr1);
+        formData.append("addr2", product.addr2);
+        formData.append("homeType", product.homeType);
         formData.append("description", product.description);
-        formData.append("inventory", product.inventory);
-
+        formData.append("productType", product.productType);
+        formData.append("qty", product.qty);
         if (product.photo) {
-            formData.append("photo", product.photo)
+            formData.append("photo", product.photo);
         }
         axios.post("http://localhost:8001/product/register", formData, {
-            headers : {
+            headers: {
                 "Content-Type": "multipart/form-data",
             }
         })
-        .then((res)=>{
+        .then((res) => {
             if (res.data.affectedRows == 1) {
                 setProduct({
-                    category:"woman",
-                    name:"",
-                    price:"",
-                    description:"",
-                    inventory:"",
-                    photo:"",
-                })
-                setPhotoValue("")
+                    category: "no_select",
+                    name: "",
+                    zipCode: "",
+                    addr1: "",
+                    addr2: "",
+                    homeType: "no_select",
+                    productType: "기본형",
+                    description: "",
+                    qty:1,
+                    photo: "",
+                });
+                setPhotoValue("");
             } else {
-                alert("상품등록 실패")
-                return
+                alert("상품등록 실패");
+                return;
             }
         })
-        .catch(err=>console.log(err))
-    }
+        .catch(err => console.log(err));
+    };
+
+    const openDaumPostcode = () => {
+        new window.daum.Postcode({
+            oncomplete: (data) => {
+                let fullAddr = '';
+                let extraAddr = '';
+                if (data.userSelectedType === 'R') {
+                    fullAddr = data.roadAddress;
+                } else {
+                    fullAddr = data.jibunAddress;
+                }
+                if (data.userSelectedType === 'R') {
+                    if (data.bname !== '') {
+                        extraAddr += data.bname;
+                    }
+                    if (data.buildingName !== '') {
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
+                }
+                setProduct(prevState => ({
+                    ...prevState,
+                    zipCode: data.zonecode,
+                    addr1: fullAddr,
+                    addr2: ""
+                }));
+                mAddressSubRef.current.focus();
+            },
+        }).open();
+    };
+
+    const handleProductTypeClick = (type) => {
+        setProduct(prevProduct => ({ ...prevProduct, productType: type }));
+    };
 
     return (
         <ProductInsertSectionBlock>
+            <div className='title'>
+                <h2>서비스 접수</h2>
+                <p>부름을 부르고 싶은 시간을 선택해주세요</p>
+            </div>
             <form onSubmit={onSubmit}>
-                <div>
-                    <label htmlFor="category">카테고리:</label>
+                <div className='time'>
                     <select name="category" id="category" value={product.category} onChange={handleChange}>
-                        <option value="woman">woman</option>
-                        <option value="man">man</option>
-                        <option value="underwear">underwear</option>
-                        <option value="kids">kids</option>
+                        <option value="no_select" disabled>방문 희망시간</option>
+                        <option value="오전(8시~10시)">오전(8시~10시)</option>
+                        <option value="오후(13시~15시)">오후(13시~15시)</option>
+                        <option value="저녁(15시~17시)">저녁(15시~17시)</option>
+                        <option value="언제든 가능">언제든 가능</option>
                     </select>
                 </div>
-                <div>
-                    <label htmlFor="name">상품명:</label>
-                    <input required type="text" name="name" id="name" value={product.name} onChange={handleChange} />
+                <div className='getName'>
+                    <label htmlFor="name">성함을 입력해주세요.</label>
+                    <input required type="text" name="name" id="name" value={product.name} onChange={handleChange} placeholder='이름' />
                 </div>
-                <div>
-                    <label htmlFor="price">가격:</label>
-                    <input required type="number" name="price" id="price" value={product.price} onChange={handleChange} />
+                <div className='address'>
+                    <label htmlFor="addr1">부름을 부르실 주소를 입력해주세요.</label>
+                    <div className='postNo'>
+                        <input style={{ width:'150px'}} type="text" name="zipCode" id="zipCode" value={product.zipCode} onChange={handleChange} readOnly placeholder='우편번호'  />
+                        <button type="button" onClick={openDaumPostcode} style={{ height:'50px', verticalAlign:'middle', padding:'0 5px', marginRight:'5px'}}>주소검색</button>
+                    </div>
+                    <div className='addr1'>
+                        <input type="text" name="addr1" id="addr1" value={product.addr1} onChange={handleChange} onClick={openDaumPostcode} readOnly placeholder='주소입력' />
+                    </div>
+                    <div className='addr2'>
+                        <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={product.addr2} onChange={handleChange} placeholder='층,동,호수 입력' />
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="description">요약설명:</label>
+                <div className='homeType'>
+                    <label htmlFor="homeType">건물의 유형을 선택해주세요.</label>
+                    <select name="homeType" id="homeType" value={product.homeType} onChange={handleChange}>
+                        <option value="no_select" disabled>선택</option>
+                        <option value="다세대&#183;다가구">다세대&#183;다가구</option>
+                        <option value="오피스텔&#183;도시형생활주택">오피스텔&#183;도시형생활주택</option>
+                        <option value="아파트">아파트</option>
+                    </select>
+                </div>
+                <div className='serviceType'>
+                    <label>서비스 유형을 선택해주세요.</label>
+                    <button type="button" className={product.productType === "기본형" ? "selected" : ""} onClick={() => handleProductTypeClick("기본형")}>기본형</button>
+                    <button type="button" className={product.productType === "고급형" ? "selected" : ""} onClick={() => handleProductTypeClick("고급형")}>고급형</button>
+                </div>
+                <div className='description'>
+                    <label htmlFor="description">특이사항이 있으면 남겨주세요</label>
                     <textarea name="description" id="description" value={product.description} onChange={handleChange}></textarea>
-                </div>
-                <div>
-                    <label htmlFor="inventory">재고:</label>
-                    <input required type="number" name="inventory" id="inventory" value={product.inventory} onChange={handleChange} />
                 </div>
                 <div>
                     <label htmlFor="photo">상품사진:</label>
