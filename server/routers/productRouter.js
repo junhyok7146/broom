@@ -18,12 +18,12 @@ const upload = multer({ storage: storage });
 // 한 개의 파일을 업로드할 때는 upload.single("photo")
 // 여러 개 파일을 업로드할 때는 upload.array("photos", 5)
 productRouter.post('/register', upload.single('photo'), (req, res) => {
-    const { category, name, zipCode, addr1, addr2, homeType, description, productType, qty } = req.body;
+    const { category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price } = req.body;
     const photo = req.file ? req.file.filename : null;
 
     db.query(
-        'INSERT INTO producttbl (category, name, zipCode, addr1, addr2, homeType, description, productType, qty, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [category, name, zipCode, addr1, addr2, homeType, description, productType, qty, photo],
+        'INSERT INTO producttbl (category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price, photo],
         (err, result) => {
             if (err) {
                 res.status(500).send('상품등록 실패');
@@ -118,5 +118,30 @@ productRouter.get('/cartList', (req, res) => {
         }
     });
 });
+
+productRouter.get("/cartQtyUpdate", (req, res)=>{
+    const {cartNo, qty} = req.query
+    db.query("UPDATE cart SET qty=? WHERE cartNo=?", [qty, cartNo], (err, result)=>{
+        if (err) {
+            res.status(500).send("장바구니 수량 수정 실패");
+            throw err
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+productRouter.get("/cartItemRemove", (req, res)=>{
+    const cartNo = req.query.cartNo
+    db.query("DELETE FROM cart WHERE cartNo=?", [cartNo], (err, result)=>{
+        if (err) {
+            res.status(500).send("장바구니 아이템 삭제 실패");
+            throw err
+        } else {
+            res.send(result)
+        }
+    })
+})
+
 
 export default productRouter;

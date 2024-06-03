@@ -232,7 +232,7 @@ const Header = ({ isScrolled }) => {
           <li><Link to="/product">마스터</Link>
             <ul className='depth2'>
               <li><Link to="/product">신청 현황</Link></li>
-              <li><Link>예약 관리</Link></li>
+              <li><Link to="/cart">예약 관리</Link></li>
             </ul>
           </li>
         </ul>
@@ -250,7 +250,7 @@ const Header = ({ isScrolled }) => {
                 <ul className={cn('openDepth2', openSubMenu === 1 && 'show')}>
                   <li style={{fontSize:"20px", color:"#fff"}}><Link>완료내역</Link></li>
                   <li style={{fontSize:"20px"}}><Link>청소현황</Link></li>
-                  <li style={{fontSize:"20px"}}><Link>마이 페이지</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/myOrder">마이 페이지</Link></li>
                 </ul>
               </li>
             </ul>
