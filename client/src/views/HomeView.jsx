@@ -1,20 +1,42 @@
-import React from 'react';
-import styled from 'styled-components'
-import SliderSection from '@/components/home/SliderSection'
+import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
+import SliderSection from '@/components/home/SliderSection';
 import ReviewMainSection from '@/components/home/ReviewMainSection';
-import ExampleSection from '../components/home/ExampleSection';
+import ExampleSection from '@/components/home/ExampleSection';
+import Header from '@/components/layout/Header';
 
-
-const HomeViewBlock = styled.div``
+const HomeViewBlock = styled.div``;
 
 const HomeView = () => {
-    return (
-        <HomeViewBlock>
-            <SliderSection />
-            <ReviewMainSection />
-            <ExampleSection />
-        </HomeViewBlock>
-    );
+  const [isScrolled, setIsScrolled] = useState(false);
+  const sliderRef = useRef(null);
+
+  const handleScroll = () => {
+    const sliderHeight = sliderRef.current.offsetHeight;
+    if (window.scrollY > sliderHeight) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <HomeViewBlock>
+      <Header isScrolled={isScrolled} />
+      <div ref={sliderRef}>
+        <SliderSection />
+      </div>
+      <ReviewMainSection />
+      <ExampleSection />
+    </HomeViewBlock>
+  );
 };
 
 export default HomeView;

@@ -1,136 +1,124 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { SiNaver } from "react-icons/si";
-import { RiKakaoTalkFill } from "react-icons/ri";
-import { FaGoogle, FaGithub } from "react-icons/fa";
-import axios from 'axios'
+import axios from 'axios';
 import { userLogin } from '@/store/member';
-import { fetchCart } from '@/store/product'
+import { fetchCart } from '@/store/product';
+import logo from '@/assets/image/join_logo.png';
 
 const LoginSectionBlock = styled.div`
-    max-width:600px; margin:50px auto;
+    max-width: 400px;
+    margin: 50px auto;
     padding-top: 110px;
-    table { 
-        col:nth-child(1) { width:150px }
-        col:nth-child(2) { width:auto }
-        td { padding:5px; 
-            &:nth-child(1) { text-align:right }
-            input { border:1px solid #ddd; height:30px; width:100%;
-                text-indent:1em; }
-        }
+    text-align: center;
+
+    h2 img {
+        width: 150px;
     }
-    .btn2 { text-align:center; margin-top:20px; 
-        button { padding:10px; background:red; color:#fff;  }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
     }
-    .snslogin { padding:50px 50px 50px 150px; 
-        div { 
-            display:flex; height:40px; line-height:40px; margin:5px 0; cursor:pointer;
-            span:nth-child(1) { width:40px; text-align:center; font-size:18px; padding-top:1px }
-            span:nth-child(2) { flex:1 }
-            &.naver { background:#03c75a;   color:#fff }
-            &.kakao { background:yellow;    color:#000 }
-            &.google { background:#ea4335;  color:#fff }
-            &.github { background:#000;     color:#fff }
-        }
+
+    label {
+        display: none;
     }
-`
+
+    input {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        height: 40px;
+        padding: 0 10px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 0;
+        background: #0059e9;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .link-container {
+        margin-top: 10px;
+    }
+
+    a {
+        color: #0059e9;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+`;
 
 const LoginSection = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [userId, setUserId] = useState("")
-    const [userPw, setUserPw] = useState("")
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [userId, setUserId] = useState("");
+    const [userPw, setUserPw] = useState("");
 
-    const userIdRef = useRef("")
-    const userPwRef = useRef("")
+    const userIdRef = useRef("");
+    const userPwRef = useRef("");
 
     const previousUrl = sessionStorage.getItem('previousUrl');
-    const choiceProduct = sessionStorage.getItem('choiceProduct')
+    const choiceProduct = sessionStorage.getItem('choiceProduct');
 
-    const handleLogin = (e)=>{
-        e.preventDefault()
+    const handleLogin = async (e) => {
+        e.preventDefault();
         if (!userId) {
-            alert("이메일을 입력하세요.")
-            userIdRef.current.focus()
-            return
+            alert("아이디를 입력해 주세요.");
+            userIdRef.current.focus();
+            return;
         }
         if (!userPw) {
-            alert("비밀번호를 입력하세요.")
-            userPwRef.current.focus()
-            return
+            alert("비밀번호를 입력하세요.");
+            userPwRef.current.focus();
+            return;
         }
         
-        axios.post("http://localhost:8001/auth/login", { userId, userPw })
-        .then((res)=>{
+        try {
+            const res = await axios.post("http://localhost:8001/auth/login", { userId, userPw });
             if (res.data[0]) {
-                console.log("회원입니다.", res.data[0])
-                dispatch(userLogin(res.data[0]))
-                dispatch(fetchCart(res.data[0].userNo))
-                if (previousUrl=='/payment') {
-                    navigate(previousUrl, {state:JSON.parse(choiceProduct)})
-                    sessionStorage.removeItem('previousUrl')
-                } else if (previousUrl=='/product' || previousUrl=='/cart'){
-                    navigate(previousUrl)
-                    sessionStorage.removeItem('previousUrl')
+                dispatch(userLogin(res.data[0]));
+                dispatch(fetchCart(res.data[0].userNo));
+                if (previousUrl === '/payment') {
+                    navigate(previousUrl, { state: JSON.parse(choiceProduct) });
+                    sessionStorage.removeItem('previousUrl');
+                } else if (previousUrl === '/product' || previousUrl === '/cart') {
+                    navigate(previousUrl);
+                    sessionStorage.removeItem('previousUrl');
                 } else {
-                    navigate('/')                
+                    navigate('/');
                 }
             } else {
-                alert("회원이 아닙니다.")
-                userIdRef.current.focus()
-                return false
+                alert("회원이 아닙니다.");
+                userIdRef.current.focus();
             }
-        })
-        .catch(err=>console.log(err.toJSON()))
-        
-    }
+        } catch (err) {
+            console.log(err.toJSON());
+        }
+    };
 
     return (
         <LoginSectionBlock>
+            <h2><img src={logo} alt="logo" /></h2>
             <form onSubmit={handleLogin}>
-                <table>
-                    <colgroup>
-                        <col />
-                        <col />
-                    </colgroup>
-                    <tbody>
-                        <tr>
-                            <td><label htmlFor="userId">이메일: </label></td>
-                            <td><input ref={userIdRef} type="text" id="userId" name="userId" onChange={ (e)=>setUserId(e.target.value)} /></td>
-                        </tr>
-                        <tr>
-                            <td><label htmlFor="userPw">비밀번호: </label></td>
-                            <td><input ref={userPwRef} type="password" id="userPw" name="userPw" onChange={ (e)=>setUserPw(e.target.value) } /></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div className="btn2">
-                    <button type="submit">로그인</button>
-                </div>
-                <div className='btn2'>
-                   <Link to="/join">회원가입</Link>
+                <input ref={userIdRef} type="text" placeholder="아이디" onChange={(e) => setUserId(e.target.value)} />
+                <input ref={userPwRef} type="password" placeholder="비밀번호" onChange={(e) => setUserPw(e.target.value)} />
+                <button type="submit">로그인</button>
+                <div className='link-container'>
+                    <Link to="/join">회원가입</Link>
                 </div>
             </form>
-            <div className="snslogin">
-                <div className="naver">
-                    <span style={{ fontSize:'15px'}}><SiNaver /></span>
-                    <span>네이버 로그인</span>
-                </div>
-                <div className="kakao">
-                    <span><RiKakaoTalkFill /></span>
-                    <span>카카오 로그인</span>
-                </div>
-                <div className="google">
-                    <span><FaGoogle /></span>
-                    <span>구글 로그인</span>
-                </div>
-                <div className="github">
-                    <span><FaGithub /></span>
-                    <span>깃허브 로그인</span>
-                </div>
-            </div>
         </LoginSectionBlock>
     );
 };
