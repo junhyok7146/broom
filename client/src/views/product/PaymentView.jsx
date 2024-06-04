@@ -6,7 +6,7 @@ const PaymentView = () => {
  
     const location = useLocation()
     const { product } = location.state
-
+    console.log(product)
     return (
         <div className="row">
             <h2 style={{ fontSize:'30px', textAlign:'center', padding:'50px 0 20px'}}>주문결제</h2>

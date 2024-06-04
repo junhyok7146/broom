@@ -185,7 +185,7 @@ const Header = () => {
             <ul className='depth2'>
               <li>완료내역</li>
               <li>청소현황</li>
-              <li>마이 페이지</li>
+              <li><Link to="/myOrder">마이 페이지</Link></li>
             </ul>
           </li>
         </ul>

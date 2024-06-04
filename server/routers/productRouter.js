@@ -102,7 +102,7 @@ productRouter.get('/cartList', (req, res) => {
     const userNo = req.query.no;
 
     const query = `
-                SELECT c.prNo, c.userNo, c.qty, p.name, p.photo 
+                SELECT c.cartNo, c.prNo, c.userNo, c.qty, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.description, p.productType, p.photo, p.price
                 FROM cart c
                 JOIN producttbl p
                 ON c.prNo = p.prNo

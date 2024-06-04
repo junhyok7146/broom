@@ -32,7 +32,7 @@ th,
     td:nth-child(5) {
       text-align: right;
     }
-    td:nth-child(6) {
+    td:nth-child(9) {
       text-align: center;
       button {
         padding: 5px 8px;
@@ -171,13 +171,19 @@ const CartSection = () => {
                     <col />
                     <col />
                     <col />
+                    <col />
+                    <col />
+                    <col />
                 </colgroup>
                 <thead>
                     <tr>
                         <th><input type="checkbox" /></th>
-                        <th>이미지</th>
-                        <th>상품명</th>
-                        <th>수량</th>
+                        <th>시간대</th>
+                        <th>예약자 성함</th>
+                        <th>우편함</th>
+                        <th>주소</th>
+                        <th>집구조</th>
+                        <th>신청타입</th>
                         <th>가격</th>
                         <th>기타</th>
                     </tr>
@@ -188,19 +194,28 @@ const CartSection = () => {
                                 <tr key={index}>
                                     <td style={{textAlign:'center'}}><input type="checkbox" name="choice" onClick={()=>handleToggle(item.prNo)} /></td>
                                     <td>
-                                        <img src={`http://localhost:8001/uploads/${item.photo}`} alt={item.name} />
+                                        { item.category }
                                     </td>
                                     <td>
                                         { item.name }
                                     </td>
                                     <td>
-                                    <input type="number" value={quantityValues[item.cartNo] || item.qty}  onChange={ (e)=>onChange(e, item.cartNo, item.inventory) } />
+                                        { item.zipCode }
                                     </td>
                                     <td>
-                                        { (parseInt(item.price) * parseInt(item.qty)).toLocaleString() }
+                                        { item.addr1}  { item.addr2}
                                     </td>
                                     <td>
-                                        <button type="button" onClick={ ()=>removeCartItem(item.cartNo)}>삭제</button>
+                                        { item.homeType }
+                                    </td>
+                                    <td>
+                                        { item.productType }
+                                    </td>
+                                    <td>
+                                        { (parseInt(item.price) * parseInt(item.qty)).toLocaleString() }원
+                                    </td>
+                                    <td>
+                                        <button type="button" onClick={ ()=>removeCartItem(item.cartNo)}>예약취소</button>
                                     </td>
                                 </tr>
                             ))
@@ -219,7 +234,7 @@ const CartSection = () => {
                 }
                 <tfoot>
                     <tr>
-                        <td colSpan="5">
+                        <td colSpan="9">
                             총 주문금액 : { total.toLocaleString() }원 <br/>
                             주문상품수량 : { carts && carts.length }종 {allCount}개
                         </td>
@@ -227,8 +242,8 @@ const CartSection = () => {
                 </tfoot>
             </TableBlock>
             <Button>
-                <button type="button" onClick={ partBuy }>선택상품 주문하기</button>
-                <button type="button" onClick={ allBuy }>전체상품 주문하기</button>
+                <button type="button" onClick={ partBuy }>선택예약 확정하기</button>
+                <button type="button" onClick={ allBuy }>전체예약 확정하기</button>
             </Button>
         </CartSectionBlock>
     );
