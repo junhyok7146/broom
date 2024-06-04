@@ -102,7 +102,6 @@ const SliderSectionBlock = styled.div`
         position: absolute;
         top: 90%;
         left: 50%;
-        z-index: 9999;
         animation: scrollAnimation 1s infinite alternate;
     }
     @keyframes scrollAnimation {
