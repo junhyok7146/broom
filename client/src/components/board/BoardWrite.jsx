@@ -24,7 +24,7 @@ table {
 const BoardWrite = ({ type, orderItem }) => {
     const user = useSelector(state=>state.members.user)
     const navigate = useNavigate()
-
+    console.log(orderItem)
     const [board, setBoard] = useState({
         writer:user.userId,
         subject:"",
