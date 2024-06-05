@@ -9,7 +9,7 @@ const PaymentView = () => {
     console.log(product)
     return (
         <div className="row">
-            <h2 style={{ fontSize:'30px', textAlign:'center', padding:'50px 0 20px'}}>주문결제</h2>
+            <h2 style={{ fontSize:'20px', textAlign:'center', padding:'100px 0 10px', display:'flex', alignItems:'center', justifyContent:'center'}}>주문결제</h2>
             <PaymentSection product={product} path={path}/>
         </div>
     );

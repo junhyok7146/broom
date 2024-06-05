@@ -48,8 +48,13 @@ const TableBlock = styled.table`
   tfoot {
     background: #0059e9;
     color: #fff;
-    td {
-      text-align: right;
+    tr {
+      td:nth-child(1) {
+        text-align: center;
+      }
+      td:nth-child(2) {
+        text-align: right;
+      }
     }
   }
 `;
@@ -118,6 +123,7 @@ const CartSection = () => {
   return (
     <CartSectionBlock>
       <TableContainer>
+        {carts && carts.length ? 
         <TableBlock>
           <thead>
             <tr>
@@ -125,7 +131,6 @@ const CartSection = () => {
               <th>내용</th>
             </tr>
           </thead>
-          {carts && carts.length ? (
             <tbody>
               {carts.map((item, index) => (
                 <React.Fragment key={index}>
@@ -158,7 +163,6 @@ const CartSection = () => {
                     <td>{(parseInt(item.price) * parseInt(item.qty)).toLocaleString()}원</td>
                   </tr>
                   <tr>
-                    <td>예약취소</td>
                     <td>
                       <button type="button" onClick={() => removeCartItem(item.cartNo)}>예약취소</button>
                     </td>
@@ -166,15 +170,8 @@ const CartSection = () => {
                 </React.Fragment>
               ))}
             </tbody>
-          ) : (
-            <tbody>
-              <tr>
-                <td colSpan="2" style={{ padding: '100px 0', textAlign: 'center', fontSize: '30px' }}>
-                  장바구니가 비어 있습니다.
-                </td>
-              </tr>
-            </tbody>
-          )}
+          
+
           <tfoot>
             <tr>
               <td>총 주문금액</td>
@@ -185,11 +182,23 @@ const CartSection = () => {
               <td>{carts && carts.length}종 {allCount}개</td>
             </tr>
           </tfoot>
-        </TableBlock>
+        </TableBlock> :
+                    <tbody>
+                    <tr>
+                      <td colSpan="2" style={{ padding: '100px 0', textAlign: 'center', fontSize: '30px' }}>
+                        장바구니가 비어 있습니다.
+                      </td>
+                    </tr>
+                  </tbody>
+      }
       </TableContainer>
+      {carts && carts.length ?
       <Button>
         <button type="button" onClick={allBuy}>예약 확정하기</button>
       </Button>
+      :
+      <div></div>
+      }
     </CartSectionBlock>
   );
 };

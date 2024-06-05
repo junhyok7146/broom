@@ -240,7 +240,7 @@ productRouter.post('/order', (req, res) => {
 productRouter.get("/myOrderList", (req, res)=>{
     const userNo = req.query.no
     const query = `
-                 SELECT o.orderNo, o.userNo, o.orderDate, o.qty, o.addNo, p.prNo, p.name, p.price, p.photo 
+                 SELECT o.orderNo, o.userNo, o.orderDate, o.qty, o.addNo, p.prNo, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.productType,  p.price, p.photo 
                  FROM  \`order\` o
                  JOIN producttbl p
                  ON o.prNo = p.prNo

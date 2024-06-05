@@ -4,12 +4,11 @@ import {Link} from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const PaymentSectionBlock = styled.div`
-padding-top: 150px;
 max-width: 700px;
 margin: 0 auto;
 overflow: hidden;
 border: 1px solid #ddd;
-    h2 { margin:5px 0 }
+    h2 { margin:20px 0; text-align: center; font-size: 18px; }
     table { margin-bottom:50px; border: 1px solid #f0f3f5;  border-collapse: collapse; }
     table.orderList {
         col:nth-child(1) { width:auto}

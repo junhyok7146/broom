@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { BsCartPlusFill, BsCartPlus } from "react-icons/bs";
+import { IoPersonSharp } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
 import { setPage, fetchProduct, fetchCart } from '@/store/product';
+import { formatCurrency } from '@/components/product/utils';
 import axios from 'axios';
 
 const ProductSectionBlock = styled.div`
@@ -18,7 +20,7 @@ const UlBlock = styled.ul`
 const ListBlock = styled.li`
     flex: 0 0 21%;
     margin: 20px 2%;
-    padding: 15px;
+    padding: 30px;
     border-radius: 15px;
     background: #fafafa;
     display: flex;
@@ -27,13 +29,17 @@ const ListBlock = styled.li`
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #ddd;
             padding-bottom: 15px;
             .top_left {
                 display: flex;
                 align-items: center;
-                img {
-                    width: 50px;
+                .icon {
+                    font-size: 40px;
+                    margin: 0 10px;
+                }
+                .name {
+                    font-weight: 600;
                 }
             }
             button {
@@ -53,6 +59,9 @@ const ListBlock = styled.li`
             padding-top: 15px;
             height: 70px;
             align-items: center;
+            @media (max-width: 600px) {
+                flex-wrap: wrap;    
+            }
             .bottom_left{
                 display: flex
                 flex-direction: column;
@@ -246,10 +255,7 @@ const ProductSection = ({ title }) => {
                             <div className="top">
                                 <div className='top_left'>
                                     <Link to={`/product/${item.prNo}`} state={{ item: item }}>
-                                        <img
-                                            src="/src/assets/image/1716968586647-unnamed.webp"
-                                            alt={item.name}
-                                            />
+                                        <div className='icon'><IoPersonSharp /></div>
                                     </Link>
                                     <div className='name'>
                                         <a href="#">{item.name}</a>
@@ -277,7 +283,7 @@ const ProductSection = ({ title }) => {
                                 </div>
                                 <div className='bottom_right'>
                                     <div>서비스유형: {item.productType}</div>
-                                    <div>예상기본가격: {item.price}</div>
+                                    <div>예상기본가격: {formatCurrency(item.price)}</div>
                                 </div>
                             </div>
                         </ListBlock>
