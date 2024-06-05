@@ -1,4 +1,4 @@
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -7,7 +7,8 @@ import { GiBroom } from "react-icons/gi";
 import { Link } from 'react-router-dom';
 import scrollDown from '@/assets/image/icon_scrollDwn.png';
 import MapModal from '@/components/home/MapModal';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const SliderSectionBlock = styled.div`
     position: relative; 
@@ -112,6 +113,44 @@ const SliderSectionBlock = styled.div`
             transform: translateY(10px);
         }
     }
+    @media (max-width: 768px) {
+        .slideText {
+            left: 5%;
+            bottom: 40%;
+            p {
+                font-size: 4vh;
+            }
+            .call, .service {
+                width: auto;
+                padding: 8px 20px;
+                font-size: 1.5vh;
+            }
+        }
+        .slick-dots {
+            bottom: 35%;
+            left: 10%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .slideText {
+            left: 5%;
+            bottom: 35%;
+            p {
+                font-size: 2.5vh;
+            }
+            .call, .service {
+                width: auto;
+                padding: 6px 15px;
+                font-size: 1.2vh;
+            }
+        }
+        .slick-dots {
+            bottom: 30%;
+            left: 5%;
+        }
+    }
+    
 `;
 
 const SliderSection = () => {
@@ -137,13 +176,19 @@ const SliderSection = () => {
         slidesToScroll: 1,
         prevArrow: null,
         nextArrow: null
+        
     };
+    useEffect(() => {
+        AOS.init({
+          duration: 1000,
+        });
+      }, []);
     
     return (
         <SliderSectionBlock>
             <Slider ref={sliderRef} {...options}>
                 <div className="slide slide1">
-                    <div className='slideText'>
+                    <div className='slideText' data-aos="fade-up" data-aos-offset="0">
                         <div><p>청소부터 리포트까지</p>
                         <p style={{fontSize:"20px"}}>#하차점검 #전후사진 #비대면 #현장확인 #청소리포트</p>
                         </div>

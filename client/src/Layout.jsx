@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import styled from 'styled-components'
 import { Outlet } from 'react-router-dom'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import {useDispatch} from 'react-redux'
-import { ImSpinner } from "react-icons/im";
+
 
 const LoadingBlock = styled.div`
     height:100vh;
@@ -20,23 +19,6 @@ const LoadingBlock = styled.div`
 `
 
 const Layout = () => {
-    const dispatch = useDispatch()
-
-    const [loading, setLoading] = useState(false)
-
-    useEffect(()=>{
-        setTimeout(()=>{ setLoading(true) }, 2000)
-    }, [])
-
-    if (!loading) {
-        return (
-            <div>
-                <LoadingBlock>
-                    <ImSpinner className="loadIcon" />
-                </LoadingBlock>
-           </div>
-        );
-    } 
     return (
         <div>
             <Header />

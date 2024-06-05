@@ -1,8 +1,9 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import { Link } from 'react-router-dom';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const SliderSection2Block = styled.div`
   margin: 50px auto;
@@ -23,12 +24,12 @@ const SliderSection2Block = styled.div`
     z-index: 1;
 
     &.slick-prev {
-      left: -30px;
+      left: 0%;
       border-bottom:1px solid #000;
     }
 
     &.slick-next {
-      right: -30px;
+      right: 0%;
       border-bottom:1px solid #000;
     }
   }
@@ -70,7 +71,9 @@ const SliderSection2Block = styled.div`
   }
 
   .slideBox {
+    
     .slick-slide > div {
+
       display: flex;
       justify-content: center;
     }
@@ -112,6 +115,38 @@ const SliderSection2Block = styled.div`
       text-align: center;
     }
   }
+  @media (max-width: 768px) {
+    margin-bottom:150px;
+    .text h2 {
+      font-size: 1.6rem;
+    }
+
+    .text p {
+      font-size: 0.8rem;
+    }
+
+    .text button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .photoBox {
+      padding: 10px;
+      height: 250px;
+    }
+
+    .photoBox img {
+      max-width: 60px;
+    }
+
+    .photoBox h3 {
+      font-size: 0.9rem;
+    }
+
+    .photoBox p {
+      font-size: 0.7rem;
+    }
+  }
 `;
 
 const SliderSection2 = () => {
@@ -139,6 +174,12 @@ const SliderSection2 = () => {
     ],
   };
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+    });
+  }, []);
+
   const sliders = [
     {
       image1: "./assets/image/img_piggybank.png",
@@ -158,19 +199,38 @@ const SliderSection2 = () => {
       text: "중대형",
       explan: "꼭 필요한 장비와 도구만을 사용하여 가격 거품 제거",
     },
+    {
+      image1: "./assets/image/img_clean.png",
+      alt: "img",
+      text: "공간별 청소도구",
+      explan: "화장실, 주방, 공용 등 걸레와 도구를 구분하여 사용합니다.",
+    },
+    {
+      image1: "./assets/image/img_manage.png",
+      alt: "img",
+      text: "3단계 검증을 통과한 마스터",
+      explan: "청소 테스트, 고객응대 테스트, 신원확인을 거쳐야만 부름의 마스터가 될 수 있습니다.",
+    },
+    {
+      image1: "./assets/image/img_images.png",
+      alt: "img",
+      text: "청소 리포트 제공",
+      explan: "청소 전후 사진과 점검결과까지 한눈에 확인하세요.",
+    },
+    
   ];
 
   return (
     <SliderSection2Block>
       <div className='content'>
-        <div className="text">
+        <div className="text" data-aos="fade-down" data-aos-anchor-placement="top-center">
           <h2>합리적으로 부름</h2>
           <p>#실속형9만9천원 #가성비 #가격거품제거</p>
           <button>
             <Link to="/example">청소사례 보기</Link>
           </button>
         </div>
-        <div className="slideBox">
+        <div className="slideBox" data-aos="fade-up" data-aos-anchor-placement="top-center">
           <Slider {...options}>
             {sliders.map((item, index) => (
               <div key={index} className="photoBox">

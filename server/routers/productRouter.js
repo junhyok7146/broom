@@ -1,17 +1,17 @@
-import express from 'express';
-import { db } from '../db.js';
-import multer from 'multer'; // multer 미들웨어를 사용하여 파일 업로드를 처리함
+import express from 'express'
+import { db } from '../db.js'
+import multer from "multer"     // multer 미들웨어를 사용하여 파일 업로드를 처리함
 import dayjs from 'dayjs'
 
-const productRouter = express.Router();
+const productRouter = express.Router()
 
 // Multer 설정
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // 파일이 저장될 폴더 경로
+        cb(null, "uploads/"); // 파일이 저장될 폴더 경로
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // 파일명 설정
+        cb(null, Date.now() + "-" + file.originalname); // 파일명 설정
     },
 });
 const upload = multer({ storage: storage });
@@ -34,52 +34,54 @@ productRouter.post('/register', upload.single('photo'), (req, res) => {
                 res.send(result);
             }
         }
-    );
+    )
 });
 
-productRouter.get('/list', (req, res) => {
-    const page = parseInt(req.query.page);
-    const category = req.query.category;
+productRouter.get("/list", (req, res)=>{
+    const page = parseInt(req.query.page)
+    const category = req.query.category
 
     const itemsPerPage = 12; // 페이지당 아이템 수
-    const offset = (page - 1) * itemsPerPage; // 오프셋 계산
+    const offset = (page - 1) * itemsPerPage;  // 오프셋 계산
 
     let countQuery = '';
     let dataQuery = '';
     let queryParams1 = [];
     let queryParams2 = [];
-    if (category === 'all') {
+    if (category=='all') {
         countQuery = 'SELECT COUNT(*) AS totalCount FROM producttbl';
-        queryParams1 = [];
+        queryParams1 = []
         dataQuery = 'SELECT * FROM producttbl ORDER BY prNo DESC LIMIT ?, ?';
         queryParams2 = [offset, itemsPerPage];
     } else {
         countQuery = 'SELECT COUNT(*) AS totalCount FROM producttbl WHERE category=?';
-        queryParams1 = [category];
+        queryParams1 = [category]
         dataQuery = 'SELECT * FROM producttbl WHERE category=? ORDER BY prNo DESC LIMIT ?, ?';
         queryParams2 = [category, offset, itemsPerPage];
     }
 
-    db.query(countQuery, queryParams1, (err, countResult) => {
+    db.query(countQuery, queryParams1, (err, countResult)=>{
         if (err) {
             res.status(500).send('레코드 카운트 가져오기 실패');
-            throw err;
+            throw err
         } else {
-            const totalCount = countResult[0].totalCount;
-            db.query(dataQuery, queryParams2, (errData, dataResult) => {
+            console.log("레코드 카운트 : ", countResult)
+            const totalCount = countResult[0].totalCount
+            db.query(dataQuery, queryParams2, (errData, dataResult)=>{
                 if (errData) {
                     res.status(500).send('상품목록 가져오기 실패');
-                    throw errData;
+                    throw errData
                 } else {
+                    console.log(dataResult)
                     res.send({
-                        totalCount: totalCount,
-                        data: dataResult,
-                    });
+                        totalCount : totalCount,
+                        data : dataResult
+                    })
                 }
-            });
+            })
         }
-    });
-});
+    })
+})
 
 productRouter.post('/cart', (req, res) => {
     const { userNo, prNo, qty, addNo } = req.body;
@@ -88,20 +90,20 @@ productRouter.post('/cart', (req, res) => {
                 INSERT INTO cart (userNo, prNo, qty, addNo) VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY 
                 UPDATE qty = qty + VALUES(qty)
-                `;
+                `
 
     db.query(query, [userNo, prNo, qty, addNo], (err, cartResult) => {
         if (err) {
-            res.status(500).send('장바구니 담기 실패');
-            throw err;
+            res.status(500).send("장바구니 담기 실패");
+            throw err
         } else {
-            res.send(cartResult);
+            res.send(cartResult)
         }
-    });
-});
+  })
+})
 
-productRouter.get('/cartList', (req, res) => {
-    const userNo = req.query.no;
+productRouter.get("/cartList", (req, res)=>{
+   const userNo = req.query.no
 
     const query = `
                 SELECT c.cartNo, c.prNo, c.userNo, c.qty, c.addNo, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.description, p.productType, p.photo, p.price
@@ -109,17 +111,17 @@ productRouter.get('/cartList', (req, res) => {
                 JOIN producttbl p
                 ON c.prNo = p.prNo
                 WHERE c.userNo=? 
-                 `;
+                 `
 
-    db.query(query, [userNo], (err, cartResult) => {
+   db.query(query, [userNo], (err, cartResult)=>{
         if (err) {
-            res.status(500).send('장바구니 검색 실패');
-            throw err;
+            res.status(500).send("장바구니 검색 실패");
+            throw err
         } else {
-            res.send(cartResult);
+            res.send(cartResult)
         }
-    });
-});
+   })
+})
 
 productRouter.get("/cartQtyUpdate", (req, res)=>{
     const {cartNo, qty} = req.query
