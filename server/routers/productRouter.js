@@ -16,20 +16,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// 한개의 파일을 업로드할 때는 upload.single("photo")
-// 여러개 파일을 업로드할 때는 upload.array("photos", 5)
-productRouter.post("/register", upload.single("photo"), (req, res)=>{
-    const { category, name, price, description, inventory} = req.body
-    const photo = req.file   // 
-    db.query("INSERT INTO producttbl (category, name, price, description, inventory, photo, reviewCount, averageRating) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [category, name, price, description, inventory, photo.filename, 0, 0], (err, result)=>{
-        if (err) {
-            res.status(500).send("상품등록 실패");
-            throw err
-        } else {
-            res.send(result)
+// 한 개의 파일을 업로드할 때는 upload.single("photo")
+// 여러 개 파일을 업로드할 때는 upload.array("photos", 5)
+productRouter.post('/register', upload.single('photo'), (req, res) => {
+    const { category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price } = req.body;
+    const photo = req.file ? req.file.filename : null;
+    const userNo = req.body.userNo;
+
+    db.query(
+        'INSERT INTO producttbl (category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price, photo, addNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [category, name, zipCode, addr1, addr2, homeType, description, productType, qty, price, photo, userNo],
+        (err, result) => {
+            if (err) {
+                res.status(500).send('상품등록 실패');
+                throw err;
+            } else {
+                res.send(result);
+            }
         }
-    })
-})
+    )
+});
 
 productRouter.get("/list", (req, res)=>{
     const page = parseInt(req.query.page)
@@ -77,45 +83,16 @@ productRouter.get("/list", (req, res)=>{
     })
 })
 
-productRouter.post("/modify", upload.single("photo"), (req, res)=>{
-    const {prNo, category, name, price, description, inventory} = req.body
-    const photo = req.file
-    const query = `UPDATE producttbl 
-                   SET category=?, name=?, price=?, description=?, inventory=?, photo=? 
-                   WHERE prNo=?`
-    const queryparam = [category, name, price, description, inventory, photo.filename, prNo]
-    db.query(query, queryparam, (err, result)=>{
-        if (err) {
-            res.status(500).send("상품정보 수정 실패");
-            throw err
-        } else {
-            res.send(result)
-        }
-    })
-})
+productRouter.post('/cart', (req, res) => {
+    const { userNo, prNo, qty, addNo } = req.body;
 
-productRouter.get("/remove", (req, res)=>{
-    const prNo = req.query.prNo
-    db.query("DELETE FROM producttbl WHERE prNo=?", [prNo], (err, result)=>{
-        if (err) {
-            res.status(500).send("상품 삭제 실패");
-            throw err
-        } else {
-            res.send(result)
-        }
-    })
-})
-
-productRouter.post("/cart", (req, res)=>{
-  const {userNo, prNo, qty} = req.body
-
-  const query = `
-                INSERT INTO cart (userNo, prNo, qty) VALUES (?, ?, ?)
+    const query = `
+                INSERT INTO cart (userNo, prNo, qty, addNo) VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY 
                 UPDATE qty = qty + VALUES(qty)
                 `
 
-  db.query(query, [userNo, prNo, qty], (err, cartResult)=>{
+    db.query(query, [userNo, prNo, qty, addNo], (err, cartResult) => {
         if (err) {
             res.status(500).send("장바구니 담기 실패");
             throw err
@@ -128,8 +105,8 @@ productRouter.post("/cart", (req, res)=>{
 productRouter.get("/cartList", (req, res)=>{
    const userNo = req.query.no
 
-   const query = `
-                SELECT c.cartNo, c.prNo, c.userNo, c.qty, p.name, p.price, p.photo, p.inventory 
+    const query = `
+                SELECT c.cartNo, c.prNo, c.userNo, c.qty, c.addNo, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.description, p.productType, p.photo, p.price
                 FROM cart c
                 JOIN producttbl p
                 ON c.prNo = p.prNo
@@ -189,17 +166,14 @@ productRouter.post('/order', (req, res) => {
                 }
 
                 const orderProduct = req.body.orderProduct;
-                // 상세페이지 구매하기 : [{ prNo, qty, userNo }]
-                // 장바구니 페이지 : [ {cartNo, userNo, qty, prNo, name, photo, inventory }, { }... ]
                 const orderDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
-                const orderQuery = 'INSERT INTO `order` (userNo, orderDate, prNo, qty) VALUES (?, ?, ?, ?)';
+                const orderQuery = 'INSERT INTO `order` (userNo, orderDate, prNo, qty, addNo) VALUES (?, ?, ?, ?, ?)';
                 const deleteCartQuery = 'DELETE FROM `cart` WHERE cartNo=?';
-                const updateInventoryQuery = 'UPDATE `producttbl` SET inventory = inventory - ? WHERE prNo = ?';
-
+                const updateInventoryQuery = 'UPDATE `producttbl` SET qty = qty - ? WHERE prNo = ?';
                 const promises = orderProduct.map((item) => {
-                    const { cartNo, userNo, prNo, qty } = item;
+                    const { cartNo, userNo, prNo, qty, addNo } = item;
                     return new Promise((resolve, reject) => {
-                        connection.query(orderQuery, [userNo, orderDate, prNo, qty], (err, orderResult) => {
+                        connection.query(orderQuery, [userNo, orderDate, prNo, qty, addNo], (err, orderResult) => {
                             if (err) {
                                 console.error('주문 목록 추가 실패:', err);
                                 reject('주문 목록 추가 실패');
@@ -264,22 +238,41 @@ productRouter.post('/order', (req, res) => {
 });
 
 productRouter.get("/myOrderList", (req, res)=>{
-   const userNo = req.query.no
-   const query = `
-                SELECT o.orderNo, o.userNo, o.orderDate, o.qty, p.prNo, p.name, p.price, p.photo 
-                FROM  \`order\` o
-                JOIN producttbl p
-                ON o.prNo = p.prNo
-                WHERE o.userNo = ?
-                `
-   db.query(query, [userNo], (err, result)=>{
+    const userNo = req.query.no
+    const query = `
+                 SELECT o.orderNo, o.userNo, o.orderDate, o.qty, o.addNo, p.prNo, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.productType,  p.price, p.photo 
+                 FROM  \`order\` o
+                 JOIN producttbl p
+                 ON o.prNo = p.prNo
+                 WHERE o.userNo = ?
+                 `
+    db.query(query, [userNo], (err, result)=>{
+         if (err) {
+             res.status(500).send("마이주문 목록 검색 실패");
+             throw err
+         } else {
+             res.send(result)
+         }
+    })
+ })
+
+productRouter.get("/customer", (req, res) => {
+    const userNo = req.query.no;
+    const query = `
+        SELECT o.orderNo, o.orderDate, o.qty, o.addNo, p.prNo, p.name, p.price, p.photo, p.addNo
+        FROM  \`order\` o
+        JOIN producttbl p
+        ON o.addNo = p.addNo
+        WHERE o.addNo = ?
+    `;
+    db.query(query, [userNo], (err, result) => {
         if (err) {
-            res.status(500).send("마이주문 목록 검색 실패");
-            throw err
+            res.status(500).send("주문 목록 검색 실패");
+            throw err;
         } else {
-            res.send(result)
+            res.send(result);
         }
-   })
-})
+    });
+});
 
 export default productRouter;

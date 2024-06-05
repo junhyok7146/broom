@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useSelector} from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -197,6 +198,7 @@ const ProductInsertSection = () => {
         qty: 1,
         price: 0,
     });
+    const user = useSelector((state) => state.members.user);
     const [totalPrice, setTotalPrice] = useState(0);
     const mAddressSubRef = useRef("");
     const [photoValue, setPhotoValue] = useState("");
@@ -239,6 +241,8 @@ const ProductInsertSection = () => {
         if (product.photo) {
             formData.append("photo", product.photo);
         }
+        formData.append("userNo", user.userNo);
+
         axios.post("http://localhost:8001/product/register", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
