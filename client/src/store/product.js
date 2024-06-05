@@ -8,6 +8,7 @@ const productSlice = createSlice({
         carts: [],       // cart : {cartNo:cartNo, userNo:userNo, prNo:prNo, qty:3,  }
         cartsCount : 0,
         orders:[],
+        customer: [],
         totalCount:0,
         currentPage:1
     },
@@ -23,13 +24,16 @@ const productSlice = createSlice({
         initOrders(state, action){
             state.orders = action.payload
         },
+        initCustomer(state, action){
+            state.customer = action.payload
+        },
         setPage(state, action){
             state.currentPage = action.payload
         }
     }
 })
 
-export const { initProducts, initCarts, initOrders, setPage } = productSlice.actions;
+export const { initProducts, initCarts, initOrders, initCustomer, setPage } = productSlice.actions;
 
 export const fetchProduct = (page, category)=>(dispatch)=>{
     axios.get(`http://localhost:8001/product/list?page=${page}&category=${category}`)
@@ -48,6 +52,26 @@ export const fetchCart = (userNo) => (dispatch)=>{
         const data = res.data;
         console.log("실제장바구니데이터", data)
         dispatch(initCarts(data))
+    })
+    .catch(err=>console.log(err))
+}
+
+export const fetchOrder = (userNo) => (dispatch)=>{
+    axios.get(`http://localhost:8001/product/myOrderList?no=${userNo}`)
+    .then((res)=>{
+        console.log("주문목록", res)
+        const data = res.data;
+        dispatch(initOrders(data))
+    })
+    .catch(err=>console.log(err))
+}
+
+export const fetchCustomer = (userNo) => (dispatch)=>{
+    axios.get(`http://localhost:8001/product/customer?no=${userNo}`)
+    .then((res)=>{
+        console.log("주문목록", res)
+        const data = res.data;
+        dispatch(initCustomer(data))
     })
     .catch(err=>console.log(err))
 }

@@ -71,7 +71,7 @@ const HeaderBlock = styled.div`
   }
 
   .depth2 {
-    margin-top:3px;
+    margin-top:0px;
     display: none;
     position: absolute;
     top: 100%;
@@ -215,9 +215,8 @@ const Header = ({ isScrolled }) => {
         <ul className='depth1'>
           <li>나의 부름
             <ul className='depth2'>
-              <li><Link>완료내역</Link></li>
+              <li><Link to="/reservation">완료내역</Link></li>
               <li><Link>청소현황</Link></li>
-              <li><Link to="myOrder">마이 페이지</Link></li>
             </ul>
           </li>
         </ul>
@@ -229,12 +228,16 @@ const Header = ({ isScrolled }) => {
           </li>
         </ul>
         <ul className='depth1'>
-          <li><Link to="/product">마스터</Link>
+            {user && user.userId === 'tsalt@hanmail.net' && (
+          <li>
+            <Link to="/product">마스터</Link>
             <ul className='depth2'>
               <li><Link to="/product">신청 현황</Link></li>
               <li><Link to="/cart">예약 관리</Link></li>
+              <li><Link to="/myOrder">예약 현황</Link></li>
             </ul>
           </li>
+        )}
         </ul>
         <ul className='depth1'>
           <li className='btn' style={{color:"#fff"}}><Link to="/productApply"><GiBroom />청소 부름</Link></li>

@@ -6,10 +6,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setPage, fetchProduct, fetchCart } from '@/store/product';
 import axios from 'axios';
 
-const ProductSectionBlock = styled.div``;
+const ProductSectionBlock = styled.div`
+padding-top: 80px;
+`;
 
 const UlBlock = styled.ul`
-    border: 0px solid #000;
     list-style: none;
     margin-top: 50px;
 `;
@@ -17,6 +18,50 @@ const UlBlock = styled.ul`
 const ListBlock = styled.li`
     flex: 0 0 21%;
     margin: 20px 2%;
+    padding: 15px;
+    border-radius: 15px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 15px;
+            .top_left {
+                display: flex;
+                align-items: center;
+                img {
+                    width: 50px;
+                }
+            }
+            button {
+                background: #0059e9;
+                color: #fff;
+                padding: 10px;
+                border-radius: 15px;
+            }
+            .on {
+                color: #0059e9;
+                font-weight: 600;
+            }
+        }
+        .bottom {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            height: 70px;
+            align-items: center;
+            .bottom_left{
+                display: flex
+                flex-direction: column;
+            }
+            .bottom_right{
+                display: flex
+                flex-direction: column;
+            }
+        }
 `;
 
 const LoadingBlock = styled.div`
@@ -30,7 +75,7 @@ const ButtonBlock = styled.div`
         margin: 50px 5px;
         padding: 5px 10px;
         &.on {
-            background: red;
+            background: #0059e9;
             color: #fff;
         }
     }
@@ -52,7 +97,9 @@ const PageButton = styled.div`
         background: #ddd;
         margin: 20px 5px;
         &.on {
-            background: red;
+            background: #0059e9;
+            color:#fff;
+            border-radius: 5px;
         }
     }
 `;
@@ -104,9 +151,9 @@ const ProductSection = ({ title }) => {
         }
     }
 
-    const addToCart = async (no)=>{
+    const addToCart = async (no, addNo)=>{
         if (user) {
-            axios.post("http://localhost:8001/product/cart", {prNo:no, userNo:user.userNo, qty:1 })
+            axios.post("http://localhost:8001/product/cart", {prNo:no, userNo:user.userNo, qty:1, addNo:addNo})
             .then((res)=>{
                 if (res.data.affectedRows!=0) {
                     console.log("장바구니 담기 성공")
@@ -196,39 +243,42 @@ const ProductSection = ({ title }) => {
                     const remainingQty = item.qty - cartIdCount(item.prNo);
                     return (
                         <ListBlock key={index}>
-                            <div className="photo">
-                                <Link to={`/product/${item.prNo}`} state={{ item: item }}>
-                                    <img
-                                        src={`http://localhost:8001/uploads/${item.photo}`}
-                                        alt={item.name}
-                                    />
-                                </Link>
+                            <div className="top">
+                                <div className='top_left'>
+                                    <Link to={`/product/${item.prNo}`} state={{ item: item }}>
+                                        <img
+                                            src="/src/assets/image/1716968586647-unnamed.webp"
+                                            alt={item.name}
+                                            />
+                                    </Link>
+                                    <div className='name'>
+                                        <a href="#">{item.name}</a>
+                                    </div>
+                                </div>
+                                    {item.qty !== cartIdCount(item.prNo) ? (
+                                            <>
+                                                <button onClick={() => addToCart(item.prNo, item.addNo)}>
+                                                    <BsCartPlusFill />
+                                                    {remainingQty === 1 && (
+                                                    <span>신청대기중</span>
+                                                )}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className='on'>예약완료</span>
+                                            </>
+                                    )}
                             </div>
-                            <div className="info">
-                                <p>
-                                    <a href="#">{item.name}</a>
-                                </p>
-                                <p>{item.addr1}</p>
-                                <p>{item.homeType}</p>
-                                <p>{item.productType}</p>
-                                <p>{item.price}</p>
-                                {item.qty !== cartIdCount(item.prNo) ? (
-                                    <>
-                                        <button onClick={() => addToCart(item.prNo)}>
-                                            <BsCartPlusFill />
-                                        </button>
-                                        {remainingQty === 1 && (
-                                            <span>신청대기중</span>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <button>
-                                            <BsCartPlus />
-                                        </button>
-                                        <span>예약완료</span>
-                                    </>
-                                )}
+                            <div className="bottom">
+                                <div className='bottom_left'>
+                                    <div>주소: {item.addr1}</div>
+                                    <div>건물유형: {item.homeType}</div>
+                                </div>
+                                <div className='bottom_right'>
+                                    <div>서비스유형: {item.productType}</div>
+                                    <div>예상기본가격: {item.price}</div>
+                                </div>
                             </div>
                         </ListBlock>
                     );
