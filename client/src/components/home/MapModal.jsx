@@ -42,7 +42,7 @@ const MapModalBlock = styled.div`
                 padding: 10px; 
                 font-size: 20px; 
             }
-            p { padding: 5px 0; }
+            p { padding: 5px 0; font-size: 16px;}
             .btn { 
                 padding: 20px 0; 
                 button { 

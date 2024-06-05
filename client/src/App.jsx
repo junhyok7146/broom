@@ -19,7 +19,7 @@ import PaymentView from '@/views/product/PaymentView'
 import PaymentFinishView from '@/views/product/PaymentFinishView'
 import MyOrderView from '@/views/product/MyOrderView'
 import SliderSection from './components/home/SliderSection';
-import Slider from 'react-slick';
+import QnAView from '@/views/qna/QnAView';
 
 const App = () => {
   return (
@@ -43,6 +43,7 @@ const App = () => {
         <Route path="/paymentFinish" element={ <PaymentFinishView /> } />
         <Route path="/myOrder" element={ <MyOrderView /> } />
         <Route path="/slider" element={ <SliderSection /> } />
+        <Route path="/qna" element={ <QnAView /> } />
       </Route>
     </Routes>
   );

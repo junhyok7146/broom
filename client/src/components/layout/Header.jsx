@@ -102,11 +102,13 @@ const HeaderBlock = styled.div`
   .btn {
     background: #0059e9;
     border-radius: 50px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
   }
 
-  .btn:hover {
-    background: #000;
-  }
 
   .closeNav {
     position: fixed;
@@ -153,6 +155,86 @@ const HeaderBlock = styled.div`
       display: block;
     }
   }
+  @media (max-width: 768px) {
+    
+    .header__logo {
+      padding: 20px 5px;
+      float: left;
+      width:80px;
+      height:auto;
+    }  
+    .NAV {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      padding: 30px 30px 0 30px;
+      flex-wrap: wrap;
+    }
+    .depth1:nth-child(1){display:none;}
+    .depth1:nth-child(2){display:none;}
+    .depth1:nth-child(3){display:none;}
+    .depth1:nth-child(4){display:none;}
+
+    .depth1:hover .depth2 {
+      display: block;
+    }
+  
+    .btn {
+      background: #0059e9;
+      border-radius: 50px;
+      transition: background-color 0.3s;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  
+  
+    .closeNav {
+      position: fixed;
+      top: 0;
+      right: -999%;
+      width: 700px;
+      height: 100%;
+      background: #0059e9;
+      transition: right 0.5s ease;
+      display: flex;
+      
+      flex-direction: column;
+      padding: 20px;
+      &.open {
+        right: 0;
+      }
+    }
+  
+    .closeNavIcon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 10000000;
+    }
+    .openDepth1 li {
+      padding: 10px 20px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+      font-size: 40px;
+    }
+  
+    .openDepth2 {
+      display: none;
+      padding: 5px;
+      color: #fff;
+      min-width: 200px;
+      font-size: 16px;
+      text-align: center;
+      &.show {
+        display: block;
+      }
+    }
 `;
 
 const Header = ({ isScrolled }) => {
@@ -204,7 +286,7 @@ const Header = ({ isScrolled }) => {
           { user ?
                 <li className="member">
                   <a href="#" onClick={ handleLogout }>로그아웃</a>
-                  <Link to="/memberModify">정보수정({user.userId})</Link>
+                  <Link to="/memberModify" style={{paddingLeft:"10px"}}>정보수정({user.userIrum})님</Link>
                 </li>
                 :
                 <li className="member">
@@ -224,7 +306,8 @@ const Header = ({ isScrolled }) => {
         <ul className='depth1'>
           <li>고객센터
             <ul className='depth2'>
-              <li><Link>자주 묻는 질문</Link></li>
+              <li><Link to="/boardList">공지 사항</Link></li>
+              <li><Link to="/qna">자주 묻는 질문</Link></li>
             </ul>
           </li>
         </ul>
@@ -257,7 +340,8 @@ const Header = ({ isScrolled }) => {
             <ul className='openDepth1' onClick={() => toggleSubMenu(2)}>
               <li>고객센터
                 <ul className={cn('openDepth2', openSubMenu === 2 && 'show')}>
-                  <li style={{fontSize:"20px"}}><Link>자주 묻는 질문</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/boardList">공지 사항</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/qna">자주 묻는 질문</Link></li>
                 </ul>
               </li>
             </ul>

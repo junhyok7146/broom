@@ -1,103 +1,161 @@
-import React, {useEffect} from 'react';
-import styled from 'styled-components'
-import {Link} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
-import { changeType, fetchNotice, setPage } from '@/store/board'
-import dayjs from 'dayjs'
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeType, fetchNotice, fetchReview, setPage } from '@/store/board';
+import dayjs from 'dayjs';
 
 const BoardListBlock = styled.div`
-    margin:0px 0 50px; 
-    table {
-        col:nth-child(1) {width:50px }
-        col:nth-child(2) {width:auto }
-        col:nth-child(3) {width:200px }
-        col:nth-child(4) {width:100px }
-        col:nth-child(5) {width:100px }
-        th { padding:5px }
-        td { 
-            padding:5px; text-align:center;
-            &:nth-child(2) { text-align:left }
-        }
+margin: 0 auto 50px;
+max-width: 1200px;
+padding: 0 20px;
+
+h1, p {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+
+    &:nth-child(2) {
+      text-align: left;
     }
-    .btn {
-        text-align:center; margin:20px 0; 
-        a { padding:10px 20px; background:red; color:#fff }
+  }
+
+  th {
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+  }
+
+  tr:first-child th, tr:first-child td {
+    border-top: none;
+  }
+}
+  .btn {
+    text-align: center;
+
+    a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #0059e9;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.3s;
+      margin-top:20px;
     }
-    .pagebutton {
-        text-align:center;
-        button { padding:5px 10px; background:#ddd; margin:20px 5px;
-            &.on { background:red }
-        }
+  }
+
+  .pagebutton {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+
+    button {
+      padding: 5px 9px;
+      background: #ddd;
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s, color 0.3s;
+
+      &.on {
+        background: #0059e9;
+        color: #fff;
+      }
+
+      &:hover:not(.on) {
+        background: #ccc;
+      }
     }
-`
+  }
+`;
 
 const BoardList = () => {
-    const dispatch = useDispatch()
-    const user = useSelector(state=>state.members.user)
-    const {list, type, totalCount, currentPage } = useSelector(state=>state.boards)
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.members.user);
+  const { list, type, totalCount, currentPage } = useSelector(state => state.boards);
 
-    const totalPages = Math.ceil(totalCount / 10);
+  const totalPages = Math.ceil(totalCount / 10);
 
-    useEffect(()=>{
-        if (type=="notice") {
-            dispatch(changeType("notice"))
-            dispatch(fetchNotice(currentPage))
-        } else {
-            dispatch(changeType("review"))
-        }
-    }, [dispatch, type, currentPage])
+  useEffect(() => {
+    if (type === "notice") {
+      dispatch(changeType("notice"));
+      dispatch(fetchNotice(1));
+    } else {
+      dispatch(changeType("review"));
+      dispatch(fetchReview(1));
+    }
+  }, [dispatch, type]);
 
-    return (
-        <BoardListBlock>
-            <table border="1">
-                <colgroup>
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>날짜</th>
-                        <th>조회수</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { list.length>0 && list.map((post, index)=>(
-                        <tr key={index}>
-                            <td>{totalCount - ((currentPage - 1) * 10 + index)}</td>
-                            <td><Link to={`/boardList/${post.subject}`} state={{ post : post }}>{post.subject}</Link></td>
-                            <td>{post.writer}</td>
-                            <td>{dayjs(post.date).format('YYYY-MM-DD')}</td>
-                            <td>{post.hit}</td>
-                        </tr>
-                    ))
-                    }
-                </tbody>
-            </table>
-            <div className="pagebutton">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button key={i} className={ currentPage == (i+1) && "on"} onClick={()=>{ dispatch(setPage(i + 1)); } }>
-                        {i + 1}
-                    </button>
-                ))}
-            </div>
-            { (type=="notice" && user && user.userId == "tsalt@hanmail.net") &&
-                <div className="btn">
-                    <Link to="/boardWrite">글쓰기</Link>
-                </div>
-            }
-            {/* { (type=="review" && user) &&
-                <div className="btn">
-                    <Link to="/boardWrite">글쓰기</Link>
-                </div>
-            } */}
-        </BoardListBlock>
-    );
+  useEffect(() => {
+    if (type === "notice") {
+      dispatch(fetchNotice(currentPage));
+    } else {
+      dispatch(fetchReview(currentPage));
+    }
+  }, [dispatch, currentPage]);
+
+  return (
+    <BoardListBlock>
+      <h1>공지 사항</h1>
+      <p>부름에서 다양한 이벤트를 확인하세요</p>
+      <table>
+        <colgroup>
+          <col style={{ width: '50px' }} />
+          <col style={{ width: 'auto' }} />
+          <col style={{ width: '200px' }} />
+          <col style={{ width: '100px' }} />
+          <col style={{ width: '100px' }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>날짜</th>
+            <th>조회수</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.length > 0 && list.map((post, index) => (
+            <tr key={index}>
+              <td>{totalCount - ((currentPage - 1) * 10 + index)}</td>
+              <td><Link to={`/boardList/${post.subject}`} state={{ post: post }}>{post.subject}</Link></td>
+              <td>{post.writer}</td>
+              <td>{dayjs(post.date).format('YYYY-MM-DD')}</td>
+              <td>{post.hit}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="pagebutton">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            className={currentPage === (i + 1) ? "on" : ""}
+            onClick={() => { dispatch(setPage(i + 1)); }}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+      {type === "notice" && user && user.userId === "tsalt@hanmail.net" &&
+        <div className="btn">
+          <Link to="/boardWrite">글쓰기</Link>
+        </div>
+      }
+    </BoardListBlock>
+  );
 };
 
 export default BoardList;

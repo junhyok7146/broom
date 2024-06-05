@@ -18,6 +18,7 @@ table {
     button, a { margin:0 10px; padding:10px 20px; background:#ddd;
         font-size:14px }
 }
+
 `
 
 const BoardWrite = ({ type }) => {

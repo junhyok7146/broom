@@ -4,6 +4,9 @@ import SliderSection from '@/components/home/SliderSection';
 import ReviewMainSection from '@/components/home/ReviewMainSection';
 import ExampleSection from '@/components/home/ExampleSection';
 import Header from '@/components/layout/Header';
+import VideoSection from '@/components/home/VideoSection';
+import BroomSection from '@/components/home/BroomSection';
+
 
 const HomeViewBlock = styled.div``;
 
@@ -35,6 +38,8 @@ const HomeView = () => {
       </div>
       <ReviewMainSection />
       <ExampleSection />
+      <VideoSection />
+      <BroomSection />
     </HomeViewBlock>
   );
 };
