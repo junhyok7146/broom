@@ -2,8 +2,11 @@ import React from 'react';
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
+import FindLocation from '@/components/layout/FindLocation'
 import ProductApplySection from '@/components/product/ProductApplySection';
-const ProductSectionBlock = styled.div``
+const ProductSectionBlock = styled.div`
+    margin: 50px auto;
+`
 
 const ProductInsert = styled.div`
     text-align:center;
@@ -15,7 +18,8 @@ const ProductApply = () => {
     const user = useSelector(state=>state.members.user)
     
         return (
-            <ProductSectionBlock>
+            <ProductSectionBlock className='row'>
+                <FindLocation/>
                 <ProductInsert>
                     {user?
                     <ProductApplySection /> :

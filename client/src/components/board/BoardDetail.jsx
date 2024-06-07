@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
+const serverUrl = import.meta.env.VITE_API_URL;
+
 const BoardDetailBlock = styled.div`
   max-width: 600px;
   margin: 0 auto 50px;

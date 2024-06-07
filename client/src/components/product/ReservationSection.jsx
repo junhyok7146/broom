@@ -5,10 +5,6 @@ import { fetchCustomer } from '@/store/product';
 import { Link } from 'react-router-dom';
 
 const ReservationSectionBlock = styled.div`
-  padding-top: 50px;
-  max-width: 800px;
-  margin: 0 auto;
-
   h2 {
     margin: 20px 0;
     font-size: 24px;

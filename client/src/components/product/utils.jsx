@@ -1,3 +1,3 @@
 export const formatCurrency = (value) => {
-    return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(value);
+    return new Intl.NumberFormat({ style: 'currency', currency: 'KRW' }).format(value);
 };

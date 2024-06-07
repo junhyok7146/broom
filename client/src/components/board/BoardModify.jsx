@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {Link, useNavigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import axios from 'axios'
+const serverUrl = import.meta.env.VITE_API_URL;
 
 const BoardModifyBlock = styled.div`
 max-width:600px; margin:0 auto 50px; 
@@ -47,7 +48,7 @@ const BoardModify = ({post}) => {
     const onSubmit = (e)=>{
         e.preventDefault()
         if (type=="notice") {
-           axios.post("http://localhost:8001/board/notice/modify", { board : board })
+           axios.post(`http://${serverUrl}/board/notice/modify`, { board : board })
            .then((res)=>{
                 if (res.data.affectedRows==1) {
                     navigate("/boardList", {state : { page : currentPage}})
