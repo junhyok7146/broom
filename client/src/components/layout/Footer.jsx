@@ -55,6 +55,9 @@ const FooterBlock = styled.footer`
         font-size: 0.9em;
         color: #999;
     }
+    @media (max-width: 768px){
+        padding-bottom:60px;
+    }
 `;
 
 const Footer = () => {

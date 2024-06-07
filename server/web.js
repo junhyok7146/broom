@@ -23,7 +23,7 @@ import otherRouter from './routers/otherRouter.js'
 
 // 리소스 파일들을 관리하는 경로 지정하기
 const __dirname = path.resolve()
-// app.use(express.static(path.join(__dirname, 'build')))
+app.use(express.static(path.join(__dirname, 'build')))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
