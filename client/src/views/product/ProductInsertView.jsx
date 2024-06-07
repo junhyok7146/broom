@@ -3,7 +3,7 @@ import ProductInsertSection from '@/components/product/ProductInsertSection'
 
 const ProductInsertView = () => {
     return (
-        <div>
+        <div className='row'>
             <ProductInsertSection />
         </div>
     );

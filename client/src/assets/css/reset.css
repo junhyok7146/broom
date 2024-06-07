@@ -14,5 +14,5 @@ legend { display:none }
 .blind { position:absolute; width:1px; height:1px; overflow:hidden; text-indent:-99999px;}
 
 
-.row { max-width:1200px; margin:auto }
+.row { max-width:1200px; margin:auto; padding-top: 88px}
 

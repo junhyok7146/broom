@@ -9,28 +9,62 @@ import { formatCurrency } from '@/components/product/utils';
 import axios from 'axios';
 
 const ProductSectionBlock = styled.div`
-padding-top: 80px;
 `;
 
+const ButtonBlock = styled.div`
+display: flex;
+justify-content: center;
+padding: 20px 0;
+background: #fafafa;
+    .filter {
+        border-radius: 15px;
+        background: #fff;
+        button {
+            background: #fff;
+            border-radius: 15px;
+            width: 90px;
+            height: 30px;
+            color: #0059e9;
+            transition: background 0.3s ease, transform 0.3s ease;
+            &.on {
+                background: #0059e9;
+                color: #fff;
+                border-radius: 15px;
+                transform: translateX(-3px)
+            }
+        }
+        button:nth-child(2) {
+            &.on {
+                background: #0059e9;
+                color: #fff;
+                border-radius: 15px;
+                transform: translateX(3px)
+            }
+        }
+    }
+`;
 const UlBlock = styled.ul`
     list-style: none;
-    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 10px;
+    background: #fafafa;
+    height: 600px;
 `;
 
 const ListBlock = styled.li`
-    flex: 0 0 21%;
-    margin: 20px 2%;
-    padding: 30px;
+    padding: 20px;
     border-radius: 15px;
-    background: #fafafa;
+    background: #fff;
     display: flex;
+    font-size: 12px;
     flex-direction: column;
         .top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #ddd;
-            padding-bottom: 15px;
             .top_left {
                 display: flex;
                 align-items: center;
@@ -56,19 +90,20 @@ const ListBlock = styled.li`
         .bottom {
             display: flex;
             justify-content: space-between;
-            padding-top: 15px;
             height: 70px;
             align-items: center;
             @media (max-width: 600px) {
                 flex-wrap: wrap;    
             }
             .bottom_left{
-                display: flex
+                display: flex;
                 flex-direction: column;
+                gap: 10px;
             }
             .bottom_right{
-                display: flex
+                display: flex;
                 flex-direction: column;
+                gap: 10px;
             }
         }
 `;
@@ -79,16 +114,6 @@ const LoadingBlock = styled.div`
     margin: 100px 0;
 `;
 
-const ButtonBlock = styled.div`
-    button {
-        margin: 50px 5px;
-        padding: 5px 10px;
-        &.on {
-            background: #0059e9;
-            color: #fff;
-        }
-    }
-`;
 
 const ProductInsert = styled.div`
     text-align: center;
@@ -124,9 +149,8 @@ const ProductSection = ({ title }) => {
     const totalCount = useSelector((state) => state.products.totalCount);
     const totalPages = Math.ceil(totalCount / 12);
     const [products, setProducts] = useState(null);
-
     const sortType = [
-        { type: 'name', text: '상품명순' },
+        { type: 'productType', text: '서비스유형' },
         { type: 'price', text: '가격순' },
     ];
 
@@ -233,19 +257,22 @@ const ProductSection = ({ title }) => {
     }
     return (
         <ProductSectionBlock>
+
             <ButtonBlock>
-                {sortType.map((item, index) => (
-                    <button
-                        key={index}
-                        onClick={() => {
-                            setChangeSort(item.type);
-                            sortProduct(item.type);
-                        }}
-                        className={changeSort === item.type ? "on" : ""}
-                    >
-                        {item.text}
-                    </button>
-                ))}
+                <div className='filter'>
+                    {sortType.map((item, index) => (
+                        <button
+                            key={index}
+                            onClick={() => {
+                                setChangeSort(item.type);
+                                sortProduct(item.type);
+                            }}
+                            className={changeSort === item.type ? "on" : ""}
+                        >
+                            {item.text}
+                        </button>
+                    ))}
+                </div>
             </ButtonBlock>
             <UlBlock>
                 {products.map((item, index) => {
@@ -258,7 +285,7 @@ const ProductSection = ({ title }) => {
                                         <div className='icon'><IoPersonSharp /></div>
                                     </Link>
                                     <div className='name'>
-                                        <a href="#">{item.name}</a>
+                                        <a href="#">{item.name} 고객님</a>
                                     </div>
                                 </div>
                                     {item.qty !== cartIdCount(item.prNo) ? (
@@ -278,12 +305,12 @@ const ProductSection = ({ title }) => {
                             </div>
                             <div className="bottom">
                                 <div className='bottom_left'>
-                                    <div>주소: {item.addr1}</div>
-                                    <div>건물유형: {item.homeType}</div>
+                                    <div className='addr'>{item.addr1}</div>
+                                    <div>기본가격: {formatCurrency(item.price)}원</div>
                                 </div>
                                 <div className='bottom_right'>
-                                    <div>서비스유형: {item.productType}</div>
-                                    <div>예상기본가격: {formatCurrency(item.price)}</div>
+                                    <div>{item.productType}</div>
+                                    <div className='homeType'>{item.homeType}</div>
                                 </div>
                             </div>
                         </ListBlock>

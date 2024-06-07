@@ -41,14 +41,14 @@ productRouter.get("/list", (req, res)=>{
     const page = parseInt(req.query.page)
     const category = req.query.category
 
-    const itemsPerPage = 12; // 페이지당 아이템 수
+    const itemsPerPage = 3; // 페이지당 아이템 수
     const offset = (page - 1) * itemsPerPage;  // 오프셋 계산
 
     let countQuery = '';
     let dataQuery = '';
     let queryParams1 = [];
     let queryParams2 = [];
-    if (category=='all') {
+    if (category=='전체') {
         countQuery = 'SELECT COUNT(*) AS totalCount FROM producttbl';
         queryParams1 = []
         dataQuery = 'SELECT * FROM producttbl ORDER BY prNo DESC LIMIT ?, ?';
@@ -256,14 +256,14 @@ productRouter.get("/myOrderList", (req, res)=>{
     })
  })
 
-productRouter.get("/customer", (req, res) => {
-    const userNo = req.query.no;
+ productRouter.get("/customer", (req, res) => {
+    const userNo = req.query.no; // 클라이언트에서 보낸 userNo 값
     const query = `
-        SELECT o.orderNo, o.orderDate, o.qty, o.addNo, p.prNo, p.name, p.price, p.photo, p.addNo
-        FROM  \`order\` o
-        JOIN producttbl p
-        ON o.addNo = p.addNo
-        WHERE o.addNo = ?
+        SELECT o.orderNo, o.orderDate, o.prNo, p.category, p.name, p.zipCode, p.addr1, p.addr2, p.homeType, p.productType,  p.price
+        FROM \`order\` o
+        JOIN producttbl p 
+        ON o.prNo = p.prNo
+        WHERE o.addNo = ?;
     `;
     db.query(query, [userNo], (err, result) => {
         if (err) {

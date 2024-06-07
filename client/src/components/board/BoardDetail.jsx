@@ -4,6 +4,8 @@ import {Link, useNavigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import axios from 'axios'
 
+const serverUrl = import.meta.env.VITE_API_URL;
+
 const BoardDetailBlock = styled.div`
 max-width:600px; margin:0 auto 50px; 
 table {
@@ -31,7 +33,7 @@ const BoardDetail = ({post}) => {
     const onRemove = (e)=>{
         e.preventDefault()
         if (type=="notice") {
-            axios.get(`http://localhost:8001/board/notice/remove?no=${post.noNo}`)
+            axios.get(`http://${serverUrl}/board/notice/remove?no=${post.noNo}`)
             .then((res)=>{
                 if (res.data.affectedRows==1) {
                     navigate("/boardList", { state : {page : currentPage }})
@@ -48,7 +50,7 @@ const BoardDetail = ({post}) => {
 
     useEffect(()=>{
         if (type=="notice") {
-            axios.get(`http://localhost:8001/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
+            axios.get(`http://${serverUrl}/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
             .then((res)=>{
                 if (res.data.affectedRows==1) {
                     console.log("증가했습니다.")
