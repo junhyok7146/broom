@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import SliderSection from '@/components/home/SliderSection';
-import ReviewMainSection from '@/components/home/ReviewMainSection';
+//import ReviewMainSection from '@/components/home/ReviewMainSection';
 import ExampleSection from '@/components/home/ExampleSection';
 import Header from '@/components/layout/Header';
 import VideoSection from '@/components/home/VideoSection';
@@ -36,7 +36,7 @@ const HomeView = () => {
       <div ref={sliderRef}>
         <SliderSection />
       </div>
-      <ReviewMainSection />
+      {/* <ReviewMainSection /> */}
       <ExampleSection />
       <VideoSection />
       <BroomSection />

@@ -146,7 +146,7 @@ const MyOrderSection = () => {
             </Slider>
           </SlideWrapper>
         ) : (
-          <div style={{ textAlign: 'center', fontSize: '30px' }}>
+          <div style={{ textAlign: 'center', fontSize: '20px' }}>
             주문하신 상품이 없습니다.
           </div>
         )

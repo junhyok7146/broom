@@ -193,7 +193,7 @@ const SliderSection = () => {
                         <p style={{fontSize:"20px"}}>#하차점검 #전후사진 #비대면 #현장확인 #청소리포트</p>
                         </div>
                         <div>
-                            <Link className='call'><GiBroom />청소부름!</Link>
+                            <Link to="/productApply" className='call'><GiBroom />청소부름!</Link>
                             <a href='' className='service' onClick={(e)=>{e.preventDefault(); setModalOpen(true)}}>서비스 지역보기+</a>
                         </div>
                     </div>
@@ -204,7 +204,7 @@ const SliderSection = () => {
                         <p style={{fontSize:"20px"}}>#대청소 #이사청소 #퇴실청소 #거주청소 #에어컨청소</p>
                         </div>
                         <div>
-                            <Link className='call'><GiBroom />청소부름!</Link>
+                            <Link to="/productApply" className='call'><GiBroom />청소부름!</Link>
                             <a href='' className='service' onClick={(e)=>{e.preventDefault(); setModalOpen(true)}}>서비스 지역보기+</a>
                         </div>
                    </div>

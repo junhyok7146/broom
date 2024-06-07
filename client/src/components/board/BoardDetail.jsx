@@ -1,129 +1,144 @@
-import React, {useEffect} from 'react';
-import styled from 'styled-components'
-import {Link, useNavigate} from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import axios from 'axios'
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const serverUrl = import.meta.env.VITE_API_URL;
 
 const BoardDetailBlock = styled.div`
-max-width:600px; margin:0 auto 50px; 
-table {
-    col:nth-child(1) { width:100px; }
-    col:nth-child(2) { width:auto; }
-    td { padding:5px;
-        input { width:100%; border:1px solid #ddd; height:30px; padding:5px; }
-        textarea { width:100%; border:1px solid #ddd; padding:5px; height:200px }
+  max-width: 600px;
+  margin: 0 auto 50px;
+  padding: 20px;
+  h2 {
+    margin-bottom: 20px;
+    font-size: 40px;
+    color: #333333;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    td {
+      padding: 10px;
+
+      input[type='text'],
+      textarea {
+        width: 100%;
+        background:#fff;
+        padding: 10px;
+        margin: 0;
+        font-size: 14px;
+        background-color: #ffffff;
+        border:none;
+      }
+      textarea {
+        height: 150px;
+        resize: none;
+        border:none;
+      }
     }
-}
-.btn { text-align:center; margin-top:20px;
-    button, a { margin:0 10px; padding:10px 20px; background:#ddd;
-        font-size:14px }
-}
-`
+  }
 
-const BoardDetail = ({post}) => {
+  .btn-group {
+    margin-top: 20px;
+    text-align: center;
 
-    const type = useSelector(state=>state.boards.type)    
-    const user = useSelector(state=>state.members.user)
-    const currentPage = useSelector(state=>state.boards.currentPage)
-
-    const navigate = useNavigate()
-
-    const onRemove = (e)=>{
-        e.preventDefault()
-        if (type=="notice") {
-            axios.get(`http://${serverUrl}/board/notice/remove?no=${post.noNo}`)
-            .then((res)=>{
-                if (res.data.affectedRows==1) {
-                    navigate("/boardList", { state : {page : currentPage }})
-                } else {
-                    alert("삭제하지 못했습니다.")
-                    return 
-                }
-            })
-            .catch(err=>console.log(err))
-        } else if (type=="review") {
-            reviewDB.child(post.key).remove()
-        }
+    button,
+    a {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: #ffffff;
+      font-size: 14px;
+      text-decoration: none;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      
+      &:hover {
+        background-color: #0056b3;
+      }
     }
+  }
+`;
 
-    useEffect(()=>{
-        if (type=="notice") {
-            axios.get(`http://${serverUrl}/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
-            .then((res)=>{
-                if (res.data.affectedRows==1) {
-                    console.log("증가했습니다.")
-                } else {
-                    console.log("증가하지 못했습니다.")
-                }
-            })
-            .catch(err=>console.log(err.toJSON()))
-        } else if (type=="review") {
-            reviewDB.child(post.key).update({
-                'hit' : post.hit+1
-            })
+const BoardDetail = ({ post }) => {
+  const type = useSelector((state) => state.boards.type);
+  const user = useSelector((state) => state.members.user);
+  const currentPage = useSelector((state) => state.boards.currentPage);
+  const navigate = useNavigate();
+  const severUrl = import.meta.env.VITE_API_URL
+  const onRemove = async (e) => {
+    e.preventDefault();
+    try {
+      let response;
+      if (type === 'notice') {
+        response = await axios.get(`${severUrl}/board/notice/remove?no=${post.noNo}`);
+        if (response.data.affectedRows === 1) {
+          navigate('/boardList', { state: { page: currentPage } });
+        } else {
+          alert('삭제하지 못했습니다.');
         }
-    }, [])
+      } else if (type === 'review') {
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
-    return (
-        <BoardDetailBlock>
-            <table border="1">
-                <colgroup>
-                    <col />
-                    <col />
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td>작성자</td>
-                        <td><input type="text" name={post.writer} value={post.writer} disabled /></td>
-                    </tr>
-                    { type=="review" &&
-                        <tr>
-                            <td>평점</td>
-                            <td>
-                                {
-                                    Array.from({length:5}).map((_, index)=>(
-                                        <span 
-                                        key={index} 
-                                        style={{ color: index < post.rating ? 'red' : '#ddd', cursor:'pointer'}}
-                                        >
-                                            ★
-                                        </span>  
-                                    ))
-                                }
-                                <span>({post.rating})점</span>
-                            </td>
-                        </tr> 
-                        }
-                        { type=="notice" ? 
-                            <tr>
-                                <td>제목</td>
-                                <td><input type="text" name="subject" value={post.subject} disabled /></td>
-                            </tr>
-                            :
-                            <tr>
-                                <td>상품명</td>
-                                <td><input type="text" name="subject" value={post.product.name} disabled /></td>
-                            </tr>
-                        }
-                    <tr>
-                        <td>내용</td>
-                        <td><textarea name="content" value={post.content} disabled></textarea></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="btn">
-                { (user && post.writer==user.userId) &&  
-                    <>
-                        <Link to={`/boardModify/${post.subject}`} state={{ post : post }}>수정</Link>
-                        <a href="#" onClick={ onRemove }>삭제</a>
-                    </>
-                }
-                <Link to="/boardList" state={{ page:currentPage}}>목록</Link>
-            </div>
-        </BoardDetailBlock>
-    );
+  useEffect(() => {
+    if (type === 'notice') {
+      axios
+        .get(`${severUrl}/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
+        .then((res) => {
+          if (res.data.affectedRows === 1) {
+            console.log('증가했습니다.');
+          } else {
+            console.log('증가하지 못했습니다.');
+          }
+        })
+        .catch((err) => console.error('Error:', err));
+    } else if (type === 'review') {
+    }
+  }, []);
+
+  return (
+    <BoardDetailBlock>
+      <h2>{post.subject}</h2>
+      <table>
+        <tbody>
+          <tr style={{borderBottom:" 1px solid #eeeeee"}}>
+            <td>작성자</td>
+            <td>
+              <input type="text" name={post.writer} value={post.writer} disabled  />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <textarea name="content" value={post.content} disabled></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="btn-group">
+        {user && post.writer === user.userId && (
+          <>
+            <Link to={`/boardModify/${post.subject}`} state={{ post: post }}>
+              수정
+            </Link>
+            <button onClick={onRemove}>삭제</button>
+          </>
+        )}
+        <Link to="/boardList" state={{ page: currentPage }}>
+          목록
+        </Link>
+      </div>
+    </BoardDetailBlock>
+  );
 };
 
 export default BoardDetail;

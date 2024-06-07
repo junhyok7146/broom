@@ -70,10 +70,10 @@ const Footer = () => {
                 주소: 경기도 하남시 미사강변중앙로 208, 7층 701-a-22호 | 전화 : 1544-5356 | 이메일 : cleanbroom@naver.com
             </div>
             <div className="social-icons">
-                <Link to="#"><img src={google} alt="Google" /></Link>
-                <Link to="#"><img src={appStore} alt="App Store" /></Link>
-                <Link to="#"><img src={insta} alt="Instagram" /></Link>
-                <Link to="#"><img src={naver} alt="Naver" /></Link>
+                <a href="https://play.google.com/store/apps/details?id=com.cleanbroom.broom" target='_blank'><img src={google} alt="Google" /></a>
+                <a href="https://apps.apple.com/kr/app/%EC%B2%AD%EC%86%8C%EB%B6%80%EB%A6%84/id1525188150" target='_blank'><img src={appStore} alt="App Store" /></a>
+                <a href="https://www.instagram.com/clean.broom/" target='_blank'><img src={insta} alt="Instagram" /></a>
+                <a href="https://blog.naver.com/cleanbroom" target='_blank'><img src={naver} alt="Naver" /></a>
             </div>
             <div className="footer-copy">
                 Copyright 2023 Clean Broom Co. all rights reserved.
