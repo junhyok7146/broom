@@ -19,7 +19,6 @@ const HeaderBlock = styled.div`
   left: 0;
   width: 100%;
   z-index: 9999999;
-
   ${(props) =>
     props.isHomePage && !props.isScrolled
       ? css`

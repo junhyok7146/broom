@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import { formatCurrency } from '@/components/product/utils';
 
 const ProductInsertSectionBlock = styled.div`
-    padding-top: 150px;
     max-width: 500px; margin: 0 auto;
     .title {
         display: flex;
@@ -26,9 +26,9 @@ const ProductInsertSectionBlock = styled.div`
         gap: 30px;
         .time, .name, .address, .homeType, .serviceType, .description, .btn {
             .container{
-                padding: 50px;
+                padding: 25px 50px;
                 width: 100%;
-                height: 500px;
+                height: 400px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -172,7 +172,6 @@ const ProductInsertSection = () => {
         slidesToScroll: 1,
         arrows: false
     };
-
     const handleChange = (e) => {
         const { value, name } = e.target;
         if(name === 'homeType'){
@@ -203,9 +202,9 @@ const ProductInsertSection = () => {
         setProduct(prevProduct => ({ ...prevProduct, photo: file }));
         setPhotoValue(e.target.value);
     };
-    
     const onSubmit = async (e) => {
         e.preventDefault();
+        console.log(product)
         const formData = new FormData();
         formData.append("category", product.category);
         formData.append("name", product.name);
@@ -384,7 +383,7 @@ const ProductInsertSection = () => {
                                 <div style={{fontSize: '25px'}}>예상금액은 '{formatCurrency(totalPrice)}' 원 이에요. <br/> 접수를 등록하시겠어요?</div>
                             </div>
                             <div className='min_content'>
-                                <button type="submit">등록</button>
+                                <button type="submit" onClick={()=>{alert("접수가 완료되었습니다.")}}>등록</button>
                             </div>
                         </div>
                     </div>

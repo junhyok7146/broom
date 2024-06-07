@@ -14,7 +14,7 @@ const ProductSectionBlock = styled.div`
 const ButtonBlock = styled.div`
 display: flex;
 justify-content: center;
-padding: 20px 0;
+padding: 10px 0;
 background: #fafafa;
     .filter {
         border-radius: 15px;
@@ -50,11 +50,11 @@ const UlBlock = styled.ul`
     gap: 20px;
     padding: 0 10px;
     background: #fafafa;
-    height: 600px;
+    height: 500px;
 `;
 
 const ListBlock = styled.li`
-    padding: 20px;
+    padding: 10px;
     border-radius: 15px;
     background: #fff;
     display: flex;
@@ -147,13 +147,13 @@ const ProductSection = ({ title }) => {
     const allData = useSelector((state) => state.products.products);
     const currentPage = useSelector((state) => state.products.currentPage);
     const totalCount = useSelector((state) => state.products.totalCount);
-    const totalPages = Math.ceil(totalCount / 12);
+    const totalPages = Math.ceil(totalCount / 3);
     const [products, setProducts] = useState(null);
     const sortType = [
         { type: 'productType', text: '서비스유형' },
         { type: 'price', text: '가격순' },
     ];
-
+    console.log(allData);
     const [changeSort, setChangeSort] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -206,7 +206,7 @@ const ProductSection = ({ title }) => {
     const renderPageButtons = () => {
         const startPage = Math.floor((currentPage - 1) / 10) * 10 + 1;
         const endPage = Math.min(startPage + 9, totalPages);
-        const pages = [];
+        const pages = []
         if (startPage > 1) {
             pages.push(
                 <button key="prev" onClick={() => dispatch(setPage(startPage - 1))}>

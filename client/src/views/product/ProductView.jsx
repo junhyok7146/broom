@@ -10,7 +10,7 @@ const ProductView = () => {
     const location = useLocation();
 
     // location.state가 없는 경우 기본값 설정
-    const { page = 1, category = '전체' } = location.state || {};
+    const { page = 1, category = 'all' } = location.state || {};
 
     const [title, setTitle] = useState(category);
 

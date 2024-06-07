@@ -18,7 +18,6 @@ const BoardDetailView = () => {
 
     return (
         <BoardDetailViewBlock className="row">
-            <h2>{ type }</h2>
             <BoardDetail post={post} />
         </BoardDetailViewBlock>
     );
