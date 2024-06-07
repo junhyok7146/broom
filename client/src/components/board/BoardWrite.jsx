@@ -115,7 +115,7 @@ const BoardWrite = ({ type, orderItem }) => {
                         }
                         <tr>
                             <td>내용</td>
-                            <td><textarea name="content" value={board.content} onChange={handleChange}></textarea></td>
+                            <td><textarea name="content" value={board.content} onChange={handleChange} maxlength="200"></textarea></td>
                         </tr>
                     </tbody>
                 </table>

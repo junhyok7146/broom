@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 const ProductApplySectionBlock= styled.div`
+padding-top:150px;
 display: flex;
 flex-direction: column;
 gap: 50px;

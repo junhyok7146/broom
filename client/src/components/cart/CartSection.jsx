@@ -186,7 +186,7 @@ const CartSection = () => {
                     <tbody>
                     <tr>
                       <td colSpan="2" style={{ padding: '100px 0', textAlign: 'center', fontSize: '30px' }}>
-                        장바구니가 비어 있습니다.
+                        예약이 없습니다.
                       </td>
                     </tr>
                   </tbody>

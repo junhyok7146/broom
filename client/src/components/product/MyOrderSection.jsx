@@ -1,58 +1,84 @@
-import React, {useEffect, useState} from 'react';
-import styled from 'styled-components'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link, useNavigate} from 'react-router-dom'
-import {changeType } from '@/store/board'
-import { fetchOrder } from '@/store/product'
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { changeType } from '@/store/board';
+import { fetchOrder } from '@/store/product';
 
 const MyOrderSectionBlock = styled.div`
-padding-top: 300px;
-h2 { margin:20px 0 }
-table { margin-bottom:50px }
-table.orderList {
-    col:nth-child(1) { width:200px}
-    col:nth-child(2) { width:auto }
-    thead { th { padding:10px } }
-    tbody { td { padding:10px } }
-}
-`
+  padding-top: 100px;
+  h2 {
+    margin: 20px 0;
+  }
+  table {
+    width: 100%;
+    margin-bottom: 50px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  table.orderList {
+    col:nth-child(1) {
+      width: 200px;
+    }
+    col:nth-child(2) {
+      width: auto;
+    }
+    thead {
+      background-color: #f8f9fa;
+      th {
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+      }
+    }
+    tbody {
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
+`;
 
 const MyOrderSection = () => {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const orders = useSelector(state=>state.products.orders)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const orders = useSelector(state => state.products.orders);
 
-    const groupedOrders = orders.reduce((acc, order) => {
-        const orderDate = new Date(order.orderDate).toLocaleString(); // 날짜 형식을 원하는 형태로 변환
-        if (!acc[orderDate]) {
-           acc[orderDate] = [];
-        }
-        acc[orderDate].push(order);
-        return acc;
-    }, {});
-
-    const user = useSelector(state=>state.members.user)
-    const review = useSelector(state=>state.boards.review)
-
-    const [userCompleteReview, setUserCompleteReview] = useState([])
-    console.log(orders)
-    useEffect(() => {
-        if (user) {
-            setUserCompleteReview(review.filter(item=>item.writer==user.userId))
-            dispatch(fetchOrder(user.userNo))
-        }
-    }, [dispatch, user.userNo]);
-
-    const handleReviewClick = (orderItem)=>{
-        dispatch(changeType("review"))
-        navigate("/boardWrite", {state:{ orderItem}})
+  const groupedOrders = orders.reduce((acc, order) => {
+    const orderDate = new Date(order.orderDate).toLocaleDateString() + ' ' + new Date(order.orderDate).toLocaleTimeString(); // 날짜 형식을 원하는 형태로 변환
+    if (!acc[orderDate]) {
+      acc[orderDate] = [];
     }
+    acc[orderDate].push(order);
+    return acc;
+  }, {});
 
-    return (
-        <MyOrderSectionBlock>
-            {user ? (
+  const user = useSelector(state => state.members.user);
+  const review = useSelector(state => state.boards.review);
+
+  const [userCompleteReview, setUserCompleteReview] = useState([]);
+  console.log(orders);
+
+  useEffect(() => {
+    if (user) {
+      setUserCompleteReview(review.filter(item => item.writer === user.userId));
+      dispatch(fetchOrder(user.userNo));
+    }
+  }, [dispatch, user?.userNo]);
+
+  const handleReviewClick = (orderItem) => {
+    dispatch(changeType("review"));
+    navigate("/boardWrite", { state: { orderItem } });
+  };
+
+  return (
+    <MyOrderSectionBlock>
+      {user ? (
         Object.keys(groupedOrders).length ? (
-          <table className="orderList" border="1">
+          <table className="orderList">
             <colgroup>
               <col />
               <col />
@@ -74,7 +100,8 @@ const MyOrderSection = () => {
                         <div
                           key={ind}
                           style={{
-                            borderBottom: '1px solid #ddd',
+                            borderBottom: '1px solid #dee2e6',
+                            padding: '10px 0',
                             position: 'relative',
                           }}
                         >
@@ -89,9 +116,11 @@ const MyOrderSection = () => {
                                 position: 'absolute',
                                 right: '10px',
                                 top: '50%',
-                                marginTop: '-13px',
+                                transform: 'translateY(-50%)',
                                 padding: '5px',
-                                background: '#eee',
+                                background: '#0059e9',
+                                borderRadius: '4px',
+                                color:'#fff',
                               }}
                             >
                               리뷰완료
@@ -102,12 +131,14 @@ const MyOrderSection = () => {
                                 position: 'absolute',
                                 right: '10px',
                                 top: '50%',
-                                marginTop: '-13px',
+                                transform: 'translateY(-50%)',
                                 padding: '5px',
-                                background: '#eee',
+                                background: '#0059e9',
+                                borderRadius: '4px',
                                 cursor: 'pointer',
+                                color:'#fff',
                               }}
-                              onClick={()=>{ handleReviewClick(item) } }
+                              onClick={() => { handleReviewClick(item); }}
                             >
                               리뷰쓰기
                             </span>
@@ -121,7 +152,7 @@ const MyOrderSection = () => {
             </tbody>
           </table>
         ) : (
-          <div style={{ textAlign: 'center', fontSize: '30px' }}>
+          <div style={{ textAlign: 'center', fontSize: '20px' }}>
             주문하신 상품이 없습니다.
           </div>
         )
@@ -135,8 +166,8 @@ const MyOrderSection = () => {
           </Link>
         </div>
       )}
-        </MyOrderSectionBlock>
-    );
+    </MyOrderSectionBlock>
+  );
 };
 
 export default MyOrderSection;

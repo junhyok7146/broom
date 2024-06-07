@@ -75,6 +75,7 @@ font-size:18px;
 
 @media (max-width: 768px) {
     padding-top: 100px;
+    height: 200vh;
     h1 {
       font-size: 40px;
     }

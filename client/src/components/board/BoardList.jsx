@@ -19,20 +19,25 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  white-space:nowrap;
+
 
   th, td {
-    padding: 10px;
+    padding: 10px 0;
     border-bottom: 1px solid #ddd;
     text-align: center;
+    overflow : hidden;
+    text-overflow:ellipsis;
 
     &:nth-child(2) {
-      text-align: left;
+      text-align: center;
     }
   }
 
   th {
     background-color: #f9f9f9;
     border-top: 1px solid #ddd;
+    text-align: center;
   }
 
   tr:first-child th, tr:first-child td {
@@ -78,6 +83,10 @@ table {
       }
     }
   }
+  @media (max-width: 480px){
+
+  }
+  
 `;
 
 const BoardList = () => {
@@ -113,9 +122,9 @@ const BoardList = () => {
         <colgroup>
           <col style={{ width: '50px' }} />
           <col style={{ width: 'auto' }} />
-          <col style={{ width: '200px' }} />
-          <col style={{ width: '100px' }} />
-          <col style={{ width: '100px' }} />
+          <col style={{ width:  'auto'}} />
+          <col style={{ width: '110px' }} />
+          <col style={{ width: '50px' }} />
         </colgroup>
         <thead>
           <tr>

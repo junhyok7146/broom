@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
 const ProductInsertSectionBlock = styled.div`
+    padding-top: 150px;
     max-width: 500px; margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -28,7 +30,7 @@ const ProductInsertSectionBlock = styled.div`
             display: flex;
             height: 50px;
             select {
-                flex:1;
+                flex: 1;
                 background: #0059e9;
                 color: #fff;
                 border-radius: 4px;
@@ -59,7 +61,7 @@ const ProductInsertSectionBlock = styled.div`
                 background: #fafafa;
                 border-radius: 4px;
                 padding: 0 30px;
-                &:focus{
+                &:focus {
                     outline: 2px solid #0059e9;
                 }
             }
@@ -81,7 +83,7 @@ const ProductInsertSectionBlock = styled.div`
                     background: #fafafa;
                     border-radius: 4px;
                     padding: 0 30px;
-                    &:focus{
+                    &:focus {
                         outline: 2px solid #0059e9;
                     }
                 }
@@ -100,7 +102,7 @@ const ProductInsertSectionBlock = styled.div`
                     background: #fafafa;
                     border-radius: 4px;
                     padding: 0 30px;
-                    &:focus{
+                    &:focus {
                         outline: 2px solid #0059e9;
                     }
                 }
@@ -113,7 +115,7 @@ const ProductInsertSectionBlock = styled.div`
                     background: #fafafa;
                     border-radius: 4px;
                     padding: 0 30px;
-                    &:focus{
+                    &:focus {
                         outline: 2px solid #0059e9;
                     }
                 }
@@ -138,12 +140,12 @@ const ProductInsertSectionBlock = styled.div`
                 cursor: pointer;
                 text-align: center;
             }
-            option{
+            option {
                 background: #fff;
                 color: #000;
             }
         }
-        .serviceType{
+        .serviceType {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -152,14 +154,16 @@ const ProductInsertSectionBlock = styled.div`
                 padding: 10px 30px;
                 border-radius: 4px;
             }
-            button.selected { background: #0059e9; color: #fff; }
+            button.selected {
+                background: #0059e9;
+                color: #fff;
+            }
         }
         .description {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 30px;
-
             textarea {
                 width: 500px;
                 height: 200px;
@@ -174,8 +178,8 @@ const ProductInsertSectionBlock = styled.div`
         .btn {
             display: flex;
             justify-content: center;
-            button{
-                background:#0059e9;
+            button {
+                background: #0059e9;
                 padding: 10px 30px;
                 color: #fff;
                 border-radius: 4px;
@@ -202,23 +206,27 @@ const ProductInsertSection = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const mAddressSubRef = useRef("");
     const [photoValue, setPhotoValue] = useState("");
+    const navigate = useNavigate();
+    
+
     const handleChange = (e) => {
         const { value, name } = e.target;
-        if(name== 'homeType'){
+        if (name == 'homeType') {
             let homeTypePrice = 0;
-        if (name === 'homeType') {
-            if (value === '다세대·다가구') {
-                homeTypePrice = 150000;
-            } else if (value === '오피스텔·도시형생활주택') {
-                homeTypePrice = 100000;
-            } else if (value === '아파트') {
-                homeTypePrice = 300000;
+            if (name === 'homeType') {
+                if (value === '다세대·다가구') {
+                    homeTypePrice = 150000;
+                } else if (value === '오피스텔·도시형생활주택') {
+                    homeTypePrice = 100000;
+                } else if (value === '아파트') {
+                    homeTypePrice = 300000;
+                }
             }
-        }
-        setTotalPrice(homeTypePrice)
+            setTotalPrice(homeTypePrice);
         }
         setProduct(product => ({ ...product, [name]: value }));
     };
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setProduct(prevProduct => ({ ...prevProduct, photo: file }));
@@ -249,7 +257,7 @@ const ProductInsertSection = () => {
             }
         })
         .then((res) => {
-            if (res.data.affectedRows == 1) {
+            if (res.data.affectedRows === 1) {
                 setProduct({
                     category: "no_select",
                     name: "",
@@ -259,11 +267,13 @@ const ProductInsertSection = () => {
                     homeType: "no_select",
                     productType: "기본형",
                     description: "",
-                    qty:1,
+                    qty: 1,
                     price: 0,
                     photo: ""
                 });
-                setPhotoValue();
+                setPhotoValue("");
+                navigate('/productApply');
+                alert("예약이 완료되었습니다.")
             } else {
                 alert("상품등록 실패");
                 return;
@@ -291,16 +301,23 @@ const ProductInsertSection = () => {
                     }
                     fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
                 }
+                // addr1 변경
                 setProduct(prevState => ({
                     ...prevState,
                     zipCode: data.zonecode,
                     addr1: fullAddr,
                     addr2: ""
                 }));
+                // addr1 변경
+                setUserInfo(prevState => ({
+                    ...prevState,
+                    addr1: fullAddr
+                }));
                 mAddressSubRef.current.focus();
             },
         }).open();
     };
+    
     const handleProductTypeClick = (type) => {
         let priceDifference = 0;
         if (type === '고급형') {
@@ -308,10 +325,16 @@ const ProductInsertSection = () => {
         } else {
             priceDifference = 200000 - (product.productType === '고급형' ? 400000 : 200000);
         }
-        setProduct(prevProduct => ({ ...prevProduct, productType: type}));
+        setProduct(prevProduct => ({ ...prevProduct, productType: type }));
         setTotalPrice(totalPrice + priceDifference);
     };
-        
+
+    const [userInfo, setUserInfo] = useState({
+        userIrum: user.userIrum,
+        addr1: user.addr1,
+        addr2: user.addr2
+    });
+
     return (
         <ProductInsertSectionBlock>
             <div className='title'>
@@ -330,19 +353,19 @@ const ProductInsertSection = () => {
                 </div>
                 <div className='getName'>
                     <label htmlFor="name">성함을 입력해주세요.</label>
-                    <input required type="text" name="name" id="name" value={product.name} onChange={handleChange} placeholder='이름' />
+                    <input required type="text" name="name" id="name" value={user.userIrum} onChange={handleChange} placeholder='이름' />
                 </div>
                 <div className='address'>
                     <label htmlFor="addr1">부름을 부르실 주소를 입력해주세요.</label>
                     <div className='postNo'>
-                        <input style={{ width:'150px'}} type="text" name="zipCode" id="zipCode" value={product.zipCode} onChange={handleChange} readOnly placeholder='우편번호'  />
-                        <button type="button" onClick={openDaumPostcode} style={{ height:'50px', verticalAlign:'middle', padding:'0 5px', marginRight:'5px'}}>주소검색</button>
+                        <input style={{ width:'150px' }} type="text" name="zipCode" id="zipCode" value={product.zipCode} onChange={handleChange} readOnly placeholder='우편번호' />
+                        <button type="button" onClick={openDaumPostcode} style={{ height:'50px', verticalAlign:'middle', padding:'0 5px', marginRight:'5px' }}>주소검색</button>
                     </div>
                     <div className='addr1'>
-                        <input type="text" name="addr1" id="addr1" value={product.addr1} onChange={handleChange} onClick={openDaumPostcode} readOnly placeholder='주소입력' />
+                        <input type="text" name="addr1" id="addr1" value={user.addr1} onChange={handleChange} onClick={openDaumPostcode}  readOnly placeholder='주소입력' />
                     </div>
                     <div className='addr2'>
-                        <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={product.addr2} onChange={handleChange} placeholder='층,동,호수 입력' />
+                        <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={user.addr2} onChange={handleChange} placeholder='층,동,호수 입력' />
                     </div>
                 </div>
                 <div className='homeType'>

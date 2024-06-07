@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Link, } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { initCarts } from '@/store/product';
 import { userLogout, localUser } from '@/store/member';
 import axios from 'axios';
-import logo from '@/assets/image/logo.png';
 import logoScrolled from '@/assets/image/logo_color.png';
 import { FaBars } from "react-icons/fa6";
 import { GiBroom } from "react-icons/gi";
@@ -31,6 +30,7 @@ const HeaderBlock = styled.div`
           background-color: #fff;
           border-bottom: 1px solid #ddd;
         `}
+
   .header__logo {
     padding: 15px 45px;
     float: left;
@@ -71,7 +71,7 @@ const HeaderBlock = styled.div`
   }
 
   .depth2 {
-    margin-top:0px;
+    margin-top: 0px;
     display: none;
     position: absolute;
     top: 100%;
@@ -91,7 +91,7 @@ const HeaderBlock = styled.div`
       padding: 10px 0;
     }
     depth2 > li{
-      width:100%
+      width: 100%
     }
   }
 
@@ -109,7 +109,6 @@ const HeaderBlock = styled.div`
     }
   }
 
-
   .closeNav {
     position: fixed;
     top: 0;
@@ -121,6 +120,9 @@ const HeaderBlock = styled.div`
     display: flex;
     flex-direction: column;
     padding: 20px;
+    align-items: center; /* 중앙 정렬 */
+    justify-content: center; /* 중앙 정렬 */
+    z-index: 10000001;
     &.open {
       right: 0;
     }
@@ -133,15 +135,19 @@ const HeaderBlock = styled.div`
     font-size: 30px;
     color: #fff;
     cursor: pointer;
-    z-index: 10000000;
+    z-index: 10000002;
   }
 
-  .openDepth1 li {
+  .openDepth1 {
     padding: 10px 20px;
     cursor: pointer;
     color: #fff;
     font-weight: bold;
     font-size: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 중앙 정렬 */
+    justify-content: center; /* 중앙 정렬 */
   }
 
   .openDepth2 {
@@ -155,14 +161,21 @@ const HeaderBlock = styled.div`
       display: block;
     }
   }
+
+  .kakao{
+    margin-top:50px;
+    border:3px solid skyblue;
+    padding:15px 30px;
+    color:#fff;
+    font-size:20px;
+  }
   @media (max-width: 768px) {
-    
     .header__logo {
       padding: 20px 5px;
       float: left;
-      width:80px;
-      height:auto;
-    }  
+      width: 80px;
+      height: auto;
+    }
     .NAV {
       position: relative;
       display: flex;
@@ -170,10 +183,10 @@ const HeaderBlock = styled.div`
       padding: 30px 30px 0 30px;
       flex-wrap: wrap;
     }
-    .depth1:nth-child(1){display:none;}
-    .depth1:nth-child(2){display:none;}
-    .depth1:nth-child(3){display:none;}
-    .depth1:nth-child(4){display:none;}
+    .depth1:nth-child(1) { display: none; }
+    .depth1:nth-child(2) { display: none; }
+    .depth1:nth-child(3) { display: none; }
+    .depth1:nth-child(4) { display: none; }
 
     .depth1:hover .depth2 {
       display: block;
@@ -189,19 +202,20 @@ const HeaderBlock = styled.div`
       }
     }
   
-  
     .closeNav {
       position: fixed;
       top: 0;
       right: -999%;
-      width: 700px;
+      width: 100%; /* 변경된 폭 */
       height: 100%;
       background: #0059e9;
       transition: right 0.5s ease;
       display: flex;
-      
       flex-direction: column;
       padding: 20px;
+      align-items: center;
+      justify-content: center; 
+      z-index: 10000001;
       &.open {
         right: 0;
       }
@@ -214,14 +228,18 @@ const HeaderBlock = styled.div`
       font-size: 30px;
       color: #fff;
       cursor: pointer;
-      z-index: 10000000;
+      z-index: 10000002;
     }
-    .openDepth1 li {
+    .openDepth1 {
       padding: 10px 20px;
       cursor: pointer;
       color: #fff;
       font-weight: bold;
       font-size: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center; 
     }
   
     .openDepth2 {
@@ -235,6 +253,21 @@ const HeaderBlock = styled.div`
         display: block;
       }
     }
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999998;
+    &.show {
+      display: block;
+    }
+  }
 `;
 
 const Header = ({ isScrolled }) => {
@@ -255,6 +288,7 @@ const Header = ({ isScrolled }) => {
     dispatch(initCarts([]));
     navigate("/");
   };
+
   useEffect(() => {
     if (localStorage.getItem('loging')) {
       const { userNo } = JSON.parse(localStorage.getItem('loging'));
@@ -273,26 +307,26 @@ const Header = ({ isScrolled }) => {
   return (
     <HeaderBlock isHomePage={isHomePage} isScrolled={isScrolled}>
       <h1 className="header__logo">
-      <Link to="/">
-    {isScrolled ? (
-      <img src={logoScrolled} alt="Scrolled Logo" />
-    ) : (
-      <img src={logoScrolled} alt="Original Logo" />
-    )}
-  </Link>
+        <Link to="/">
+          {isScrolled ? (
+            <img src={logoScrolled} alt="Scrolled Logo" />
+          ) : (
+            <img src={logoScrolled} alt="Original Logo" />
+          )}
+        </Link>
       </h1>
       <div className='NAV'>
-      <ul className='depth1'>
+        <ul className='depth1'>
           { user ?
-                <li className="member">
-                  <a href="#" onClick={ handleLogout }>로그아웃</a>
-                  <Link to="/memberModify" style={{paddingLeft:"10px"}}>정보수정({user.userIrum})님</Link>
-                </li>
-                :
-                <li className="member">
-                    <Link to="/login">로그인</Link>
-                </li>
-              }
+            <li className="member">
+              <a href="#" onClick={ handleLogout }>로그아웃</a>
+              <Link to="/memberModify" style={{paddingLeft:"10px"}}>({user.userIrum})님</Link>
+            </li>
+            :
+            <li className="member">
+              <Link to="/login">로그인</Link>
+            </li>
+          }
         </ul>
         <ul className='depth1'>
           <li>나의 부름
@@ -311,16 +345,16 @@ const Header = ({ isScrolled }) => {
           </li>
         </ul>
         <ul className='depth1'>
-            {user && user.userId === 'tsalt@hanmail.net' && (
-          <li>
-            <Link to="/product">마스터</Link>
-            <ul className='depth2'>
-              <li><Link to="/product">신청 현황</Link></li>
-              <li><Link to="/cart">예약 관리</Link></li>
-              <li><Link to="/myOrder">예약 현황</Link></li>
-            </ul>
-          </li>
-        )}
+          {user && user.userId === 'tsalt@hanmail.net' && (
+            <li>
+              <Link to="/product">마스터</Link>
+              <ul className='depth2'>
+                <li><Link to="/product">신청 현황</Link></li>
+                <li><Link to="/cart">예약 관리</Link></li>
+                <li><Link to="/myOrder">예약 현황</Link></li>
+              </ul>
+            </li>
+          )}
         </ul>
         <ul className='depth1'>
           <li className='btn' style={{color:"#fff"}}><Link to="/productApply"><GiBroom />청소 부름</Link></li>
@@ -333,7 +367,7 @@ const Header = ({ isScrolled }) => {
           <div>
             <ul className='openDepth1' onClick={() => toggleSubMenu(1)}>
               <li>나의 부름
-                <ul className={cn('openDepth2', openSubMenu === 1 && 'show')}>
+                <ul className={cn('openDepth2', openSubMenu === 1 && 'show')} onClick={() => setOpenNav(false)}>
                   <li style={{fontSize:"20px", color:"#fff"}}><Link>완료내역</Link></li>
                   <li style={{fontSize:"20px"}}><Link>청소현황</Link></li>
                   <li style={{fontSize:"20px"}}><Link to="/myOrder">마이 페이지</Link></li>
@@ -342,7 +376,7 @@ const Header = ({ isScrolled }) => {
             </ul>
             <ul className='openDepth1' onClick={() => toggleSubMenu(2)}>
               <li>고객센터
-                <ul className={cn('openDepth2', openSubMenu === 2 && 'show')}>
+                <ul className={cn('openDepth2', openSubMenu === 2 && 'show')} onClick={() => setOpenNav(false)}>
                   <li style={{fontSize:"20px"}}><Link to="/boardList">공지 사항</Link></li>
                   <li style={{fontSize:"20px"}}><Link to="/qna">자주 묻는 질문</Link></li>
                 </ul>
@@ -350,7 +384,7 @@ const Header = ({ isScrolled }) => {
             </ul>
             <ul className='openDepth1' onClick={() => toggleSubMenu(3)}>
               <li>마스터
-                <ul className={cn('openDepth2', openSubMenu === 3 && 'show')}>
+                <ul className={cn('openDepth2', openSubMenu === 3 && 'show')} onClick={() => setOpenNav(false)}>
                   <li style={{fontSize:"20px"}}><Link to="/login">로그인</Link></li>
                   <li style={{fontSize:"20px"}}><Link to="/join">회원가입</Link></li>
                 </ul>
@@ -358,12 +392,13 @@ const Header = ({ isScrolled }) => {
             </ul>
             <ul>
               <li>
-                <a href='#'>카카오톡으로 문의하기</a>
+                <a href='https://pf.kakao.com/_CKBFT' target='_blank' className='kakao'>카카오톡으로 문의하기</a>
               </li>
             </ul>
           </div>
         </div>
       </div>
+      <div className={cn('overlay', openNav && 'show')} onClick={() => setOpenNav(false)} />
     </HeaderBlock>
   );
 };
