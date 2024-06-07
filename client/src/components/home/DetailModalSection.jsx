@@ -13,14 +13,15 @@ bottom: 0;
 background: rgba(0, 0, 0, 0.5);
 display: none;
 z-index:99;
+width:400px;
 &.on {
     display: flex; 
     justify-content: center; 
     align-items: center;
-    .content {
+    .modalContent {
         overflow: auto;
         display: block; 
-        max-width: 800px; 
+        max-width: 500px; 
         height:600px;
         color: #555; 
         background: #fff; 
@@ -61,25 +62,24 @@ td:nth-child(4){ color:#976fdd;}
 tr:nth-child(1){background:#ddd;}
 }
 
-/* 스크롤바의 전체 스타일 */
+
 ::-webkit-scrollbar {
-  width: 12px; /* 스크롤바의 너비 */
+  width: 12px; 
 }
 
-/* 스크롤바의 트랙 스타일 */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; /* 트랙의 배경색 */
+  background: #f1f1f1; 
 }
 
-/* 스크롤바의 핸들 스타일 */
+
 ::-webkit-scrollbar-thumb {
-  background: #888; /* 핸들의 배경색 */
-  border-radius: 6px; /* 핸들의 모서리를 둥글게 */
+  background: #888;
+  border-radius: 6px; 
 }
 
-/* 스크롤바 핸들을 호버할 때의 스타일 */
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* 핸들의 배경색 (호버 시) */
+  background: #555; 
 }
 `
 
@@ -87,8 +87,7 @@ tr:nth-child(1){background:#ddd;}
 const DetailModalSection = ({ modalOpen, onClose}) => {
     return (
         <DetailModalSectionBlock className={modalOpen ? 'on' : ''}>
-            <div className="content">
- 
+            <div className="modalContent">
             <button onClick={onClose} className='closeBtn'><IoClose /></button>
             <div className='detail'>
             <h1>서비스 유형 비교</h1>

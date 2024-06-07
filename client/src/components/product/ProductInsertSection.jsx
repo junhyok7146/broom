@@ -301,23 +301,17 @@ const ProductInsertSection = () => {
                     }
                     fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
                 }
-                // addr1 변경
                 setProduct(prevState => ({
                     ...prevState,
                     zipCode: data.zonecode,
                     addr1: fullAddr,
                     addr2: ""
                 }));
-                // addr1 변경
-                setUserInfo(prevState => ({
-                    ...prevState,
-                    addr1: fullAddr
-                }));
                 mAddressSubRef.current.focus();
             },
         }).open();
     };
-    
+
     const handleProductTypeClick = (type) => {
         let priceDifference = 0;
         if (type === '고급형') {
@@ -328,12 +322,6 @@ const ProductInsertSection = () => {
         setProduct(prevProduct => ({ ...prevProduct, productType: type }));
         setTotalPrice(totalPrice + priceDifference);
     };
-
-    const [userInfo, setUserInfo] = useState({
-        userIrum: user.userIrum,
-        addr1: user.addr1,
-        addr2: user.addr2
-    });
 
     return (
         <ProductInsertSectionBlock>
@@ -353,7 +341,7 @@ const ProductInsertSection = () => {
                 </div>
                 <div className='getName'>
                     <label htmlFor="name">성함을 입력해주세요.</label>
-                    <input required type="text" name="name" id="name" value={user.userIrum} onChange={handleChange} placeholder='이름' />
+                    <input required type="text" name="name" id="name" value={product.name} onChange={handleChange} placeholder='이름' />
                 </div>
                 <div className='address'>
                     <label htmlFor="addr1">부름을 부르실 주소를 입력해주세요.</label>
@@ -362,10 +350,10 @@ const ProductInsertSection = () => {
                         <button type="button" onClick={openDaumPostcode} style={{ height:'50px', verticalAlign:'middle', padding:'0 5px', marginRight:'5px' }}>주소검색</button>
                     </div>
                     <div className='addr1'>
-                        <input type="text" name="addr1" id="addr1" value={user.addr1} onChange={handleChange} onClick={openDaumPostcode}  readOnly placeholder='주소입력' />
+                        <input type="text" name="addr1" id="addr1" value={product.addr1} onChange={handleChange} onClick={openDaumPostcode} readOnly placeholder='주소입력' />
                     </div>
                     <div className='addr2'>
-                        <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={user.addr2} onChange={handleChange} placeholder='층,동,호수 입력' />
+                        <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={product.addr2} onChange={handleChange} placeholder='층,동,호수 입력' />
                     </div>
                 </div>
                 <div className='homeType'>

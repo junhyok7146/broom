@@ -227,7 +227,7 @@ const SliderSection2 = () => {
           <h2>합리적으로 부름</h2>
           <p>#실속형9만9천원 #가성비 #가격거품제거</p>
           <button>
-            <Link to="/example">청소사례 보기</Link>
+            <a href="https://blog.naver.com/cleanbroom" target='_blank'>청소사례 보기</a>
           </button>
         </div>
         <div className="slideBox" data-aos="fade-up" data-aos-anchor-placement="top-center">

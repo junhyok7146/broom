@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import '@/assets/css/reset.css'
 import { fetchNotice } from '@/store/board';
+import ScrollToTop from './routes/ScrollToTop.jsx'
 
 // 어플리케이션이 실행될 때 초기 데이터를 가져옴
 store.dispatch(fetchNotice(1));
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <ScrollToTop />
         <App />
       </BrowserRouter>
     </Provider>

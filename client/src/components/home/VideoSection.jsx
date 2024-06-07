@@ -48,6 +48,7 @@ height: 100vh;
 .videoBox {
   overflow: hidden;
   position: relative;
+  align-items: center;
   .video {
     position: absolute;
     left: 5%;
@@ -55,6 +56,7 @@ height: 100vh;
     display:inline;
     width:100%;
     height:100%;
+    align-items: center;
   }
   img {
     max-width: 100vh;

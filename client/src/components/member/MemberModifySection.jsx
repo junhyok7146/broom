@@ -23,7 +23,7 @@ const MemberModifySectionBlock = styled.div`
             padding: 10px; 
             vertical-align: middle;
             &:nth-child(1) { 
-                text-align: right; 
+                text-align: left; 
                 font-weight: bold;
                 color: #333;
             }
@@ -212,13 +212,13 @@ const MemberModifySection = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td  style={{textAlign:"left"}}>
                                 <input type="text" name="addr1" id="addr1" ref={mAddressRef} value={userInfo.addr1} onChange={handleChange} readOnly />
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={userInfo.addr2} onChange={handleChange} />
+                            <td  style={{textAlign:"left"}}>
+                                <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={userInfo.addr2} onChange={handleChange}  />
                             </td>
                         </tr>
                     </tbody>
