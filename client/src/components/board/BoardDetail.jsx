@@ -77,7 +77,7 @@ const BoardDetail = ({ post }) => {
     try {
       let response;
       if (type === 'notice') {
-        response = await axios.get(`${severUrl}/board/notice/remove?no=${post.noNo}`);
+        response = await axios.get(`${serverUrl}/board/notice/remove?no=${post.noNo}`);
         if (response.data.affectedRows === 1) {
           navigate('/boardList', { state: { page: currentPage } });
         } else {
@@ -93,7 +93,7 @@ const BoardDetail = ({ post }) => {
   useEffect(() => {
     if (type === 'notice') {
       axios
-        .get(`${severUrl}/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
+        .get(`${serverUrl}/board/notice/hit?no=${post.noNo}&hit=${post.hit}`)
         .then((res) => {
           if (res.data.affectedRows === 1) {
             console.log('증가했습니다.');
