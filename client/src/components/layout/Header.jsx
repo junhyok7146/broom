@@ -191,7 +191,7 @@ const HeaderBlock = styled.div`
       width: 80px;
       height: auto;
       order: 1; 
-      left:42%;
+      left:41%;
       position:absolute;
     }
 
