@@ -3,105 +3,102 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCustomer } from '@/store/product';
 import { Link } from 'react-router-dom';
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const ReservationSectionBlock = styled.div`
-  h2 {
-    margin: 20px 0;
-    font-size: 24px;
-    text-align: center;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 50px;
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    th {
-      text-align: left;
-      font-weight: bold;
-    }
-
-    img {
-      width: 100px;
-      height: auto;
-      margin-right: 10px;
-    }
-  }
-
-  .no-order {
-    text-align: center;
-    font-size: 18px;
-    margin-top: 50px;
-  }
-
-  .login-message {
-    text-align: center;
-    margin-top: 50px;
-
-    a {
-      padding: 10px;
-      background: #ddd;
-      text-decoration: none;
+padding: 20px;
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 24px 16px 24px;
+  display: flex;
+  font-size: 15px;
+  flex-direction: column;
+  .title {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    padding: 5px 0;
+    button {
+      background: #e4efff;
+      color: #0059e9;
+      padding: 4px 12px;
+      border-radius: 8px;
     }
   }
+    .list{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+      .cate{
+      display: flex;
+          .min_title{
+            width: 70px;
+            color: #999;
+          }
+        }
+    }
+}
 `;
 
 const ReservationSection = () => {
+  useEffect(() => {
+    AOS.init({
+    duration: 1000,
+    });
+  }, []);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.members.user);
   const customer = useSelector((state) => state.products.customer);
-
+  console.log(customer)
   useEffect(() => {
     if (user) {
       dispatch(fetchCustomer(user.userNo));
     }
   }, [dispatch, user]);
-
-  const groupedOrders = customer.reduce((acc, order) => {
-    const orderDate = new Date(order.orderDate).toLocaleString();
-    if (!acc[orderDate]) {
-      acc[orderDate] = [];
-    }
-    acc[orderDate].push(order);
-    return acc;
-  }, {});
-
   return (
     <ReservationSectionBlock>
       {user ? (
-        Object.keys(groupedOrders).length ? (
-          <table>
-            <thead>
-              <tr>
-                <th>주문일자</th>
-                <th>주문상품</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(groupedOrders).map((orderDate, index) => (
-                <tr key={index}>
-                  <td>{orderDate}</td>
-                  <td>
-                    {groupedOrders[orderDate].map((item, ind) => (
-                      <div key={ind}>
-                        <img src={`http://localhost:8001/uploads/${item.photo}`} alt={item.name} />
-                        <span>상품명: {item.name}</span> /{' '}
-                        <span>수량: {item.qty}개</span> /{' '}
-                        <span>금액: {parseInt(item.qty) * parseInt(item.price)}원</span>
-                      </div>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        customer.length > 0 ? (
+          <div className='main'>
+            {customer.map((item, index) => (
+              <div className='content' key={index} data-aos="fade-left">
+                  <div className='title'>
+                    <div>예약번호 {item.prNo}</div>
+                    <div><button>미완료</button></div>
+                  </div>
+                  <div className='list'>
+                    <div className='cate'>
+                      <div className='min_title'>예약 일자</div>
+                      <div>{new Date(item.orderDate).toLocaleDateString()}</div>
+                    </div>
+                    <div className='cate'>
+                      <div className='min_title'>집 구조</div>
+                      <div>{item.homeType}</div>
+                    </div>
+                    <div className='cate'>
+                      <div className='min_title'>신청타입</div>
+                      <div>{item.productType}</div>
+                    </div>
+                  </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className="no-order">주문하신 상품이 없습니다.</div>
+          <div style={{height:'600px', display:'flex', justifyContent:'center',alignItems:'center', flexDirection:'column'}}>
+            <div style={{display:'flex', justifyContent:'center',alignItems:'center', flexDirection:'column', gap: '30px'}}>
+              <div className="no-order" style={{fontSize: '20px'}}>확정된 예약이 없습니다.</div>
+              <Link to="/" style={{display: 'flex', justifyContent:'center', background: '#0059e9', color: '#fff', borderRadius:'5px', padding:'5px 10px'}}>돌아가기</Link>
+            </div>
+          </div>
         )
       ) : (
         <div className="login-message">

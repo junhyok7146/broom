@@ -7,7 +7,6 @@ import insta from '../../assets/image/icon_insta.png';
 import naver from '../../assets/image/icon_naver.png';
 
 const FooterBlock = styled.footer`
-    margin-top:150px;
     background-color: #f8f8f8;
     padding: 20px 0;
     text-align: center;

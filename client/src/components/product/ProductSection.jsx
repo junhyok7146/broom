@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { BsCartPlusFill, BsCartPlus } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";
 import { Link, useNavigate } from 'react-router-dom';
 import { setPage, fetchProduct, fetchCart } from '@/store/product';
 import { formatCurrency } from '@/components/product/utils';
 import axios from 'axios';
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const ProductSectionBlock = styled.div`
 `;
@@ -141,7 +142,11 @@ const PageButton = styled.div`
 const ProductSection = ({ title }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    useEffect(() => {
+        AOS.init({
+        duration: 1000,
+        });
+    }, []);
     const user = useSelector((state) => state.members.user);
     const carts = useSelector((state) => state.products.carts);
     const allData = useSelector((state) => state.products.products);
@@ -250,7 +255,14 @@ const ProductSection = ({ title }) => {
         return (
             <ProductSectionBlock>
                 <LoadingBlock>
-                    <p>들어온 신청이 없습니다.</p>
+                <div style={{ textAlign: 'center', height:'600px' , display:'flex', flexDirection:'column', justifyContent:'center'}}>
+        <div style={{width: '100%', display:'flex', flexDirection:'column', gap: '20px'}}>
+          <div style={{fontSize: '20px', margin:'0 auto'}}>
+            접수된 예약이 없습니다.
+          </div>
+          <Link to="/" style={{ padding: '10px', background: '#0059e9', color: '#fff', borderRadius:'5px',width:'100px', textAlign:'center', margin:'0 auto' }}>돌아가기</Link>
+        </div>
+      </div>
                 </LoadingBlock>
             </ProductSectionBlock>
         );
@@ -278,7 +290,7 @@ const ProductSection = ({ title }) => {
                 {products.map((item, index) => {
                     const remainingQty = item.qty - cartIdCount(item.prNo);
                     return (
-                        <ListBlock key={index}>
+                        <ListBlock key={index} data-aos="fade-left">
                             <div className="top">
                                 <div className='top_left'>
                                     <Link to={`/product/${item.prNo}`} state={{ item: item }}>
@@ -291,10 +303,11 @@ const ProductSection = ({ title }) => {
                                     {item.qty !== cartIdCount(item.prNo) ? (
                                             <>
                                                 <button onClick={() => addToCart(item.prNo, item.addNo)}>
-                                                    <BsCartPlusFill />
-                                                    {remainingQty === 1 && (
-                                                    <span>신청대기중</span>
-                                                )}
+                                                        {remainingQty === 1 && (
+                                                    <Link to='/cart'>
+                                                        <span>신청대기중</span>
+                                                    </Link>
+                                                    )}
                                                 </button>
                                             </>
                                         ) : (

@@ -1,72 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { fetchCart } from '@/store/product';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 
 const CartSectionBlock = styled.div`
-padding-top: 100px;
+  max-width: 500px;
+  margin: 0 auto;
+  height: 500px;
+  padding-top: 50px;
+
   .title {
-    text-align: center;
     color: #0059e9;
     font-weight: 600;
-  } 
+  }
+
+  ul.slick-dots {
+    top: -40px;
+    bottom: auto;
+  }
 `;
 
-const TableBlock = styled.table`
-  border: 1px solid #f0f3f5;
+const CardItemBlock = styled.div`
+  border: 1px solid #d1d1d1;
   border-radius: 12px;
-  overflow: hidden;
-  width: 100%;
-  margin: 10px;
-  td, th {
-    padding: 7px;
-    text-align: left;
-  }
-  th {
-    text-align: center;
-  }
-  th:nth-child(1) {
-    width: 150px;
-  }
-  tbody {
-    width: 100%;
-    tr:nth-child(even) {
-      background: #fafafa;
-    }
-    tr{
-      width: 100%;
-      td:nth-child(1){
-        text-align: center;
-        width: 150px;
-        font-weight: 600;
-      }
-    }
-  }
-  tfoot{
-    td{
+  padding: 30px 30px;
+  margin-bottom: 20px;
+
+  .card-item-row {
+    display: flex;
+    margin-bottom: 10px;
+    gap: 20px;
+
+    .item-label {
+      font-weight: 600;
       text-align: center;
-      button {
-        padding: 10px;
-        background: #0059e9;
-        color: #fff;
-        border-radius: 5px;
-        margin: 10px;
-      }
-      button:nth-child(2) {
-        width: 96.59px;
-      }
     }
+  }
+
+  .item-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 40px;
+    button {
+      flex: 1;
+      padding: 10px;
+      background: #0059e9;
+      color: #fff;
+      border-radius: 5px;
+    }
+      button:nth-child(1) {
+        background:#fff;
+        border: 1px solid #0059e9;
+        color: #0059e9;
+      }
   }
 `;
-
 
 const CartSection = () => {
+  useEffect(() => {
+    AOS.init({
+    duration: 1000,
+    });
+  }, []);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const carts = useSelector((state) => state.products.carts);
@@ -125,66 +129,62 @@ const CartSection = () => {
 
   return (
     <CartSectionBlock>
-        <div></div>
-        <div className='title'>예약자 정보</div>
       <Slider {...settings}>
         {carts && carts.length ? 
           carts.map((item, index) => (
             <div key={index}>
-              <TableBlock>
-                <thead>
-                  <tr>
-                    <th colSpan='1'></th>
-                    <th colSpan='1'></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>예약자 성함</td>
-                    <td>{item.name}</td>
-                  </tr>
-                  <tr>
-                    <td>시간대</td>
-                    <td>{item.category}</td>
-                  </tr>
-                  <tr>
-                    <td>우편번호</td>
-                    <td>{item.zipCode}</td>
-                  </tr>
-                  <tr>
-                    <td>주소</td>
-                    <td>{item.addr1} {item.addr2}</td>
-                  </tr>
-                  <tr>
-                    <td>집구조</td>
-                    <td>{item.homeType}</td>
-                  </tr>
-                  <tr>
-                    <td>신청타입</td>
-                    <td>{item.productType}</td>
-                  </tr>
-                  <tr>
-                    <td>가격</td>
-                    <td>{(parseInt(item.price) * parseInt(item.qty)).toLocaleString()}원</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <td colSpan="2">
+              <CardItemBlock style={{display:'flex', flexDirection:'column', gap:'20px', margin:'20px'}}  data-aos='fade-up'>
+                <div className='title' style={{textAlign:'left', fontSize:'20px'}}>예약번호 <span>{item.prNo}</span></div>
+                <div className='content' style={{padding:'0 20px', fontSize:'13px'}}>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>예약자 성함</span>
+                    <span>{item.name}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>시간대</span>
+                    <span>{item.category}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>우편번호</span>
+                    <span>{item.zipCode}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>주소</span>
+                    <span>{item.addr1} {item.addr2}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>집구조</span>
+                    <span>{item.homeType}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>신청타입</span>
+                    <span>{item.productType}</span>
+                  </div>
+                  <div className="card-item-row">
+                    <span className="item-label" style={{width:'70px'}}>가격</span>
+                    <span>{(parseInt(item.price) * parseInt(item.qty)).toLocaleString()}원</span>
+                  </div>
+                  <div className="item-actions">
+                    <button type="button" onClick={() => removeCartItem(item.cartNo)}><Link to='/product'>예약취소</Link></button>
                     <button type="button" onClick={() => buyItem(item)}>예약 확정하기</button>
-                    <button type="button" onClick={() => removeCartItem(item.cartNo)}>예약취소</button>
-                  </td>
-                </tfoot>
-              </TableBlock>
+                  </div>
+                </div>
+              </CardItemBlock>
             </div>
           ))
         :
-          <div style={{ padding: '100px 0', textAlign: 'center', fontSize: '30px' }}>
-            장바구니가 비어 있습니다.
+        <div style={{ textAlign: 'center', height:'600px' , display:'flex', flexDirection:'column', justifyContent:'center'}}>
+        <div style={{width: '100%', display:'flex', flexDirection:'column', gap: '20px'}}>
+          <div style={{fontSize: '20px', margin:'0 auto'}}>
+            선택한 예약이 없습니다.
           </div>
+          <Link to="/product" style={{ padding: '10px', background: '#0059e9', color: '#fff', borderRadius:'5px',width:'100px', textAlign:'center', margin:'0 auto' }}>돌아가기</Link>
+        </div>
+      </div>
         }
       </Slider>
     </CartSectionBlock>
   );
 };
 
-export default CartSection;
+export default CartSection; 

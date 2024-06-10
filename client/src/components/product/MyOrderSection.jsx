@@ -146,8 +146,13 @@ const MyOrderSection = () => {
             </Slider>
           </SlideWrapper>
         ) : (
-          <div style={{ textAlign: 'center', fontSize: '20px' }}>
-            주문하신 상품이 없습니다.
+          <div style={{ textAlign: 'center', height:'600px' , display:'flex', flexDirection:'column', justifyContent:'center'}}>
+            <div style={{width: '100%', display:'flex', flexDirection:'column', gap: '20px'}}>
+              <div style={{fontSize: '20px'}}>
+                확정된 예약이 없습니다.
+              </div>
+              <Link to="/cart" style={{ padding: '10px', background: '#0059e9', color: '#fff', borderRadius:'5px',width:'100px', textAlign:'center', margin:'0 auto' }}>돌아가기</Link>
+            </div>
           </div>
         )
       ) : (

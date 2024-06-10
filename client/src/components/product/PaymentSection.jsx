@@ -2,51 +2,96 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const PaymentSectionBlock = styled.div`
-max-width: 700px;
-margin: 0 auto;
-overflow: hidden;
-border: 1px solid #ddd;
-    h2 { margin:20px 0; text-align: center; font-size: 18px; }
-    table { margin-bottom:50px; border: 1px solid #f0f3f5;  border-collapse: collapse; }
-    table.orderList {
-        col:nth-child(1) { width:auto}
-        col:nth-child(2) { width:150px; }
-        col:nth-child(3) { width:150px; }
-        thead { 
-            th { 
-                padding:5px;
-                background: #fafafa;
-            }
+height: 700px;
+h2.title {
+    text-align: center;
+    padding: 16px 0;
+    color: #0059e9;
+}
+.content {
+    background: #fff;
+    padding: 16px 24px;
+    margin: 0 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    .orderList {
+        h2 {
+            font-weight: 500;
+            color: #000;
+            text-align: left;
         }
-        tbody { td { padding:10px } }
-        tfoot {
-            td { text-align:center; 
-                >div {
-                  padding:20px; 
-                  display:flex; 
-                  justify-content:center; 
-                  align-items:center;  
-                  >div { margin:0 20px; 
-                       p:nth-child(2) { font-size:30px }
+        .list {
+            padding-top: 16px;
+            .category {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                .name {
+                    display: flex;
+                    .first {
+                    width: 100px;
+                    color:#999999;
                     }
+                }
+                }
+                .price {
+                    display: flex;
+                    justify-content: space-between;
+                    border-bottom: 1px solid #eeeeee;
+                    border-top: 1px solid #eeeeee;
+                    padding: 16px 0;
+                    p:nth-child(2) {
+                        color: #0059e9;
+                        font-size:24px;
+                        font-weight: 600;
+                        span {
+                            color: #000;
+                            font-size: 15px;
+                            font-weight: 400;
+                        }
+                    }
+                }
+        }
+    }
+    .customerInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        .infoContent {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            .contentRow {
+                display: flex;
+                .rowTitle {
+                    width: 100px;
+                    font-weight: 600;
+                }
+                .rowContent {
+                    border-bottom: 1px solid #eeeeee;
+                    width: 100%;
+                    padding-bottom: 10px;
                 }
             }
         }
     }
-
-    table.customerInfo {
-        col:nth-child(1) { width:150px }
-        col:nth-child(2) { width:auto }
-        tbody { td { padding:10px } }
-        input[type=text] { border:1px solid #ddd; height:30px; width:400px; padding-left:10px }
-        input[type=radio] + span { margin-right:20px }
-    }
+}
 
 `
 
 const PaymentSection = ({product, path}) => {
+    useEffect(() => {
+        AOS.init({
+        duration: 1000,
+        });
+    }, []);
+    
     let total = 0
     if (path =='cart') {
         total = product.reduce((acc, item)=>acc+(parseInt(item.price) * parseInt(item.qty)), 0)
@@ -132,85 +177,71 @@ const PaymentSection = ({product, path}) => {
 
 
     return (
-        <PaymentSectionBlock>
-            <h2>확정예약목록</h2>
-            <table className="orderList" border="1">
-                <colgroup>
-                    <col />
-                    <col />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>옵션</th>
-                        <th>기본금액</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    { path=='detail' ? product.map((item, index)=>(
-                        <tr key={index}>
-                            <td><img src={`http://localhost:8001/uploads/${item.product.photo}`} alt={item.product.name} /> 상품명 : {item.product.name} / 수량 : {item.qty}개 / 가격 : {parseInt(item.product.price).toLocaleString()}원</td>
-                            <td style={{textAlign:"right"}}>{(parseInt(item.qty)*parseInt(item.product.price)).toLocaleString()}원</td>
-                        </tr>
-                    )) :
-                    product.map((item, index)=>(
-                        <tr key={index}>
-                            <td>{item.name} / {item.homeType}/ {item.productType}</td>
-                            <td style={{textAlign:"right"}}>{(parseInt(item.qty)*parseInt(item.price)).toLocaleString()}원</td>
-                        </tr>
-                    )) 
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="2">
-                            <div>
-                                <div>
-                                    <p>예약기본금액</p>
-                                    <p>{total.toLocaleString()}원</p>
+        <PaymentSectionBlock data-aos='fade-up' >
+            <h2 className='title'>예약확정</h2>
+            <div className='content'>
+                <div className="orderList">
+                    <h2>확정예약목록</h2>
+                    <div className='list'>
+                        {product.map((item, index)=>(
+                            <div className='category' key={index}>
+                                <div className='name'>
+                                    <div className='first'>
+                                        성명
+                                    </div>
+                                    <div>
+                                        {item.name} 
+                                    </div>
+                                </div>
+                                <div className='name'>
+                                    <div className='first'>
+                                        집구조
+                                    </div>
+                                    <div>
+                                        {item.homeType}
+                                    </div>
+                                </div>
+                                <div className='name'>
+                                    <div className='first'>
+                                        서비스유형
+                                    </div>
+                                    <div>
+                                        {item.productType} 
+                                    </div>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-            <h2>마스터 배정/ 예약문자 발송</h2>
-            <table className="customerInfo" border="1">
-                <colgroup>
-                    <col />
-                    <col />
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td>마스터 배정</td>
-                        <td>{userInfo.userIrum}</td>
-                    </tr>
-                    <tr>
-                        <td>마스터 지역</td>
-                        <select>
-                            <option value="경기도">경기도</option>
-                            <option value="서울">서울</option>
-                        </select>
-                    </tr>
-                    <td>예약문자</td>
-                    <textarea id="message" name="message" rows="4" cols="50" value={message} onChange={(e) => setMessage(e.target.value)}>
-    
-                    </textarea>
-                    <tr>
-                        <td>마스터 전화번호</td>
-                        <td>
-                            <input type="text" name="handphone" value={userInfo.handphone} onChange={handleChange} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>이메일</td>
-                        <td>
-                            <input type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div style={{ textAlign:'center'}}>
-                <Link to="/paymentFinish" state={{ product, path }} style={{ padding:'10px', background:'#0059e9', color:'#fff', borderRadius:"10px", width:"80%", margin: "20px auto"}}>예약확정</Link>
+                        )) 
+                        }
+                        <div className='price'>
+                            <p>예약기본금액</p>
+                            <p>{total.toLocaleString()}<span>원</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div className="customerInfo">
+                    <h2 style={{fontWeight:'600'}}>마스터 배정</h2>
+                    <div className='infoContent'>
+                        <div className='contentRow'>
+                            <div className='rowTitle'>이름</div>
+                            <div className='rowContent'>{userInfo.userIrum}</div>
+                        </div>
+                        <div className='contentRow'>
+                            <div className='rowTitle'>전화번호</div>
+                            <div className='rowContent'>
+                                <input type="text" name="handphone" value={userInfo.handphone} onChange={handleChange} />
+                            </div>
+                        </div>
+                        <div className='contentRow'>
+                            <div className='rowTitle'>이메일</div>
+                            <div className='rowContent'>
+                                <input type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style={{ textAlign:'center'}}>
+                    <Link to="/paymentFinish" state={{ product, path }} style={{ padding:'12px 16px', background:'#0059e9', color:'#fff', borderRadius:"10px", width:'100%'}}>예약확정</Link>
+                </div>
             </div>
         </PaymentSectionBlock>
     );

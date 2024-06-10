@@ -8,23 +8,23 @@ const FindLocation = () => {
     const location = useLocation();
     const pathMap = {
         '/': 'Home',
-        '/cart': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                    <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>마스터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>예약관리</span>
+        '/cart': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                    <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>마스터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>예약관리</span>
                 </div>,
-        '/myOrder': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                    <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>마스터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>예약현황</span>
+        '/myOrder': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                    <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>마스터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>예약현황</span>
                 </div>,
-        '/productApply': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>나의 부름</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>청소부름</span>
+        '/productApply': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>나의 부름</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>청소부름</span>
                         </div>,
-        '/reservation': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>나의 부름</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>완료내역</span>
+        '/reservation': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>나의 부름</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>완료내역</span>
                         </div>,
-        '/boardList': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                             <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>고객센터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>공지사항</span>
+        '/boardList': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                             <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>고객센터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>공지사항</span>
                         </div>,
-        '/qna': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#0059e9',justifyContent:'center'}}>
-                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>고객센터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center'}}>자주 묻는 질문</span>
+        '/qna': <div style={{display:'flex', gap:'10px', alignItems:'center', color:'#999',justifyContent:'left'}}>
+                            <span><IoMdHome style={{fontSize: '25px'}}/></span><FaArrowRight style={{fontSize: '10px'}}/><span style={{fontSize: '12px', display:'flex', alignItems:'center'}}>고객센터</span><FaArrowRight style={{fontSize: '10px'}}/><span  style={{fontSize: '12px', display:'flex', alignItems:'center', color: '#0059e9', fontWeight: '600'}}>자주 묻는 질문</span>
                         </div>,
         // 필요한 다른 경로와 치환할 단어를 추가합니다.
       };
@@ -33,7 +33,7 @@ const FindLocation = () => {
       const getFriendlyName = (path) => pathMap[path] || path;
   
     return (
-      <div>
+      <div style={{margin:'15px 30px'}}>
         {getFriendlyName(currentPath)}
       </div>
     );

@@ -1,24 +1,26 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const ProductApplySectionBlock= styled.div`
-padding-top:150px;
 display: flex;
 flex-direction: column;
-gap: 50px;
-max-width: 700px;
+gap: 20px;
+max-width: 500px;
+height: 600px;
 margin: auto;
     .title{
         display: flex;
         flex-direction: column;
-        gap: 50px;
+        gap: 10px;
         h2 {
-            font-size: 30px;
+            font-size: 20px;
         }
         p {
-            font-size: 16px;
-            color: #999999;
+            font-size: 13px;
+            color: #777;
         }
     }
 
@@ -28,7 +30,7 @@ margin: auto;
         padding: 0 15px;
         .image{
             background: url("/src/assets/image/apply_img.jpg") no-repeat center;
-            height: 360px;
+            height: 350px;
             width: 100%;
             position: relative;
             .detail {
@@ -85,8 +87,15 @@ margin: auto;
 `
 
 const ProductApplySection = () => {
+    useEffect(() => {
+        AOS.init({
+        duration: 700,
+        });
+    }, []);
+    
+
     return (
-        <ProductApplySectionBlock>
+        <ProductApplySectionBlock data-aos="fade-up">
             <div className='title'>
                 <h2>서비스 이용 안내</h2>
                 <p>면적과 구조에 따른 합리적인 청소비용을 확인하세요</p>
