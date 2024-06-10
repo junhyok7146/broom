@@ -10,6 +10,7 @@ import logoScrolled from '@/assets/image/logo_color.png';
 import { FaBars } from "react-icons/fa6";
 import { GiBroom } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
+import { PiBroom } from "react-icons/pi";
 import cn from 'classnames';
 
 const HeaderBlock = styled.div`
@@ -19,6 +20,7 @@ const HeaderBlock = styled.div`
   left: 0;
   width: 100%;
   z-index: 9999999;
+
   ${(props) =>
     props.isHomePage && !props.isScrolled
       ? css`
@@ -33,6 +35,12 @@ const HeaderBlock = styled.div`
   .header__logo {
     padding: 15px 45px;
     float: left;
+    display: flex;
+    align-items: center;
+    a {
+      display: flex;
+    align-items: center;      
+    }
   }
 
   .NAV {
@@ -67,6 +75,9 @@ const HeaderBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .btn__mobile > a{
+    color:#fff;
   }
 
   .depth2 {
@@ -119,8 +130,8 @@ const HeaderBlock = styled.div`
     display: flex;
     flex-direction: column;
     padding: 20px;
-    align-items: center; /* 중앙 정렬 */
-    justify-content: center; /* 중앙 정렬 */
+    align-items: center;
+    justify-content: center; 
     z-index: 10000001;
     &.open {
       right: 0;
@@ -145,8 +156,8 @@ const HeaderBlock = styled.div`
     font-size: 40px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* 중앙 정렬 */
-    justify-content: center; /* 중앙 정렬 */
+    align-items: center;
+    justify-content: center; 
   }
 
   .openDepth2 {
@@ -167,20 +178,38 @@ const HeaderBlock = styled.div`
     padding:15px 30px;
     color:#fff;
     font-size:20px;
+    
   }
   @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 -5px 5px -5px #666;
+    display: flex;
+    justify-content: space-between; /* NAV 양 끝에 아이템 배치 */
+    align-items: center; /* 가운데 정렬 */
+    padding: 0 10px; /* 좌우 여백 추가 */
+    
     .header__logo {
-      padding: 20px 5px;
-      float: left;
+      padding: 5px 5px;
+      margin: 0; /* 여백 제거 */
       width: 80px;
       height: auto;
+      order: 1; /* 순서 변경 */
+      left:44%;
+      position:absolute;
+      z-index:3;
     }
+
     .NAV {
-      position: relative;
+      flex: 1;
       display: flex;
-      justify-content: flex-end;
-      padding: 30px 30px 0 30px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .depth1 > li {
+      padding: 10px 3px;
     }
     .depth1:nth-child(1) { display: none; }
     .depth1:nth-child(2) { display: none; }
@@ -192,13 +221,24 @@ const HeaderBlock = styled.div`
     }
   
     .btn {
-      background: #0059e9;
-      border-radius: 50px;
-      transition: background-color 0.3s;
-  
+      left:0%;
+      background: none;
+      padding: 0;
       &:hover {
-        background-color: #0056b3;
+        background-color: transparent;
       }
+    }
+
+
+    .btn__mobile > a {
+      color: #0059e9;
+      display: flex;
+      font-size:25px;
+      align-items: center;
+      padding-left: 0px;
+    }
+    .btn__mobile .btn__text {
+      display: none; /* 768px 미만일 때 텍스트 숨김 */
     }
   
     .closeNav {
@@ -343,7 +383,7 @@ const Header = ({ isScrolled }) => {
             </ul>
           </li>
         </ul>
-        <ul className='depth1'>
+        <ul className='depth1' onClick={() => setOpenNav(false)}>
           {user && user.userId === 'tsalt@hanmail.net' && (
             <li>
               <Link to="/product">마스터</Link>
@@ -355,8 +395,10 @@ const Header = ({ isScrolled }) => {
             </li>
           )}
         </ul>
-        <ul className='depth1'>
-          <li className='btn' style={{color:"#fff"}}><Link to="/productApply"><GiBroom />청소 부름</Link></li>
+        <ul className='depth1 mobileNav'>
+          <li className='btn btn__mobile '>
+            <Link to="/productApply"><PiBroom /> <span className="btn__text">청소 부름</span></Link>
+          </li>
         </ul>
         <ul className='depth1'>
           <li style={{ color: "#0059e9", fontSize: "30px" }} onClick={() => setOpenNav(true)}><FaBars /></li>
@@ -364,12 +406,23 @@ const Header = ({ isScrolled }) => {
         <div className={cn('closeNav', openNav && 'open')}>
           <IoClose className="closeNavIcon" onClick={() => setOpenNav(false)} />
           <div>
+            <ul className='loginPart' style={{color:'#fff',fontSize:'30px'}}>
+            { user ?
+              <li className="member">
+                <Link to="/memberModify" style={{paddingLeft:"0px"}}>{user.userIrum}</Link><br/>
+                <a href="#" onClick={ handleLogout }>로그아웃</a>
+              </li>
+              :
+              <li className="member">
+                <Link to="/login">로그인</Link>
+              </li>
+            }
+          </ul>
             <ul className='openDepth1' onClick={() => toggleSubMenu(1)}>
               <li>나의 부름
                 <ul className={cn('openDepth2', openSubMenu === 1 && 'show')} onClick={() => setOpenNav(false)}>
-                  <li style={{fontSize:"20px", color:"#fff"}}><Link>완료내역</Link></li>
                   <li style={{fontSize:"20px"}}><Link>청소현황</Link></li>
-                  <li style={{fontSize:"20px"}}><Link to="/myOrder">마이 페이지</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/reservation">마이 페이지</Link></li>
                 </ul>
               </li>
             </ul>
@@ -382,12 +435,15 @@ const Header = ({ isScrolled }) => {
               </li>
             </ul>
             <ul className='openDepth1' onClick={() => toggleSubMenu(3)}>
+              {user && user.userId === 'tsalt@hanmail.net' && (
               <li>마스터
                 <ul className={cn('openDepth2', openSubMenu === 3 && 'show')} onClick={() => setOpenNav(false)}>
-                  <li style={{fontSize:"20px"}}><Link to="/login">로그인</Link></li>
-                  <li style={{fontSize:"20px"}}><Link to="/join">회원가입</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/product">신청목록</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/cart">예약 관리</Link></li>
+                  <li style={{fontSize:"20px"}}><Link to="/myOrder">예약 현황</Link></li>
                 </ul>
               </li>
+              )}
             </ul>
             <ul>
               <li>

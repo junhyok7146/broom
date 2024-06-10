@@ -20,7 +20,7 @@ const ProductCategoryBlock = styled.div`
 `
 
 const ProductCategory = ({changeTitle, title}) => {
-    const category = ['all','오전(8시~10시)', '오후(13시~15시)', '저녁(15시~17시)', '언제든 가능']
+    const category = ['전체','오전(8시~10시)', '오후(13시~15시)', '저녁(15시~17시)', '언제든 가능']
     return (
         <ProductCategoryBlock>
             {

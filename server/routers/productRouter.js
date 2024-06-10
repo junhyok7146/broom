@@ -48,7 +48,7 @@ productRouter.get("/list", (req, res)=>{
     let dataQuery = '';
     let queryParams1 = [];
     let queryParams2 = [];
-    if (category=='all') {
+    if (category=='전체') {
         countQuery = 'SELECT COUNT(*) AS totalCount FROM producttbl';
         queryParams1 = []
         dataQuery = 'SELECT * FROM producttbl ORDER BY prNo DESC LIMIT ?, ?';
@@ -59,6 +59,7 @@ productRouter.get("/list", (req, res)=>{
         dataQuery = 'SELECT * FROM producttbl WHERE category=? ORDER BY prNo DESC LIMIT ?, ?';
         queryParams2 = [category, offset, itemsPerPage];
     }
+
     db.query(countQuery, queryParams1, (err, countResult)=>{
         if (err) {
             res.status(500).send('레코드 카운트 가져오기 실패');

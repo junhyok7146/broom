@@ -1,13 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import { formatCurrency } from '@/components/product/utils';
+import { FaChevronDown } from "react-icons/fa";  // Importing the chevron down icon
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const ProductInsertSectionBlock = styled.div`
-    max-width: 500px; margin: 0 auto;
+    max-width: 500px;
+    height: 600px;
+    margin: 0 auto;
+
     .title {
         display: flex;
         flex-direction: column;
@@ -26,33 +33,35 @@ const ProductInsertSectionBlock = styled.div`
         gap: 30px;
         .time, .name, .address, .homeType, .serviceType, .description, .btn {
             .container{
-                padding: 25px 50px;
+                padding: 30px 50px;
                 width: 100%;
-                height: 400px;
+                height: 500px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 .min_title {
-                    flex:1;
+                    flex: 1;
                     width: 100%;
                     display: flex;
                     align-items: center;
                     label {
                         font-size: 30px;
                         width: 100%;
+                        text-align: center;
                     }
                 }
                 .min_content {
-                    flex:1;
+                    flex: 1;
                     width: 100%;
+                    position: relative;
                 }
             }
         }
-        .time {
+        .time, .homeType {
             select {
-                background: #0059e9;
-                color: #fff;
+                background: #f1f1f1;
+                color: #777;
                 border-radius: 4px;
                 border: none;
                 appearance: none;
@@ -60,11 +69,25 @@ const ProductInsertSectionBlock = styled.div`
                 -webkit-appearance: none;
                 outline: none;
                 cursor: pointer;
-                text-align: center;
+                text-align: left;
+                padding: 10px 40px 10px 15px;
+                width: 100%;
             }
             option {
                 background: #fff;
                 color: #000;
+            }
+            .select-wrapper {
+                position: relative;
+                width: 100%;
+            }
+            .select-icon {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: #000; /* Adjust the color as needed */
             }
         }
         .name {
@@ -88,7 +111,7 @@ const ProductInsertSectionBlock = styled.div`
                     border-radius: 4px;
                     padding: 0 30px;
                     height: 50px;
-                    &:focus{
+                    &:focus {
                         outline: 1px solid #0059e9;
                     }
                 }
@@ -104,7 +127,7 @@ const ProductInsertSectionBlock = styled.div`
                 flex-direction: column;
                 gap: 10px;
                 input {
-                    &:focus{
+                    &:focus {
                         outline: 1px solid #0059e9;
                     }
                 }
@@ -115,9 +138,19 @@ const ProductInsertSectionBlock = styled.div`
             flex-direction: column;
             align-items: center;
             gap: 30px;
+            .min_title {
+            
+            }
+            .min_content {
+                display: flex;
+                gap: 12px;
+            }
             button {
                 padding: 10px 30px;
                 border-radius: 4px;
+                color: #0059e9;
+                border: 1px solid #0059e9;
+                background: #fff;
             }
             button.selected {
                 background: #0059e9;
@@ -145,6 +178,11 @@ const ProductInsertSectionBlock = styled.div`
 `;
 
 const ProductInsertSection = () => {
+    useEffect(() => {
+        AOS.init({
+        duration: 1000,
+        });
+    }, []);
     const [product, setProduct] = useState({
         category: "no_select",
         name: "",
@@ -158,6 +196,7 @@ const ProductInsertSection = () => {
         qty: 1,
         price: 0,
     });
+    const navigate = useNavigate();
     const user = useSelector((state) => state.members.user);
     const [totalPrice, setTotalPrice] = useState(0);
     const mAddressSubRef = useRef("");
@@ -165,16 +204,17 @@ const ProductInsertSection = () => {
     const sliderRef = useRef(null);
     const [isTyping, setIsTyping] = useState(false);
     const settings = {
-        dots: true,
+        dots: false,
         infinite: false,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
         arrows: false
     };
+
     const handleChange = (e) => {
         const { value, name } = e.target;
-        if(name === 'homeType'){
+        if (name === 'homeType') {
             let homeTypePrice = 0;
             if (value === '다세대·다가구') {
                 homeTypePrice = 150000;
@@ -202,9 +242,9 @@ const ProductInsertSection = () => {
         setProduct(prevProduct => ({ ...prevProduct, photo: file }));
         setPhotoValue(e.target.value);
     };
+
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(product)
         const formData = new FormData();
         formData.append("category", product.category);
         formData.append("name", product.name);
@@ -240,6 +280,7 @@ const ProductInsertSection = () => {
                     photo: ""
                 });
                 setPhotoValue("");
+                navigate('/InsertComplete');
             } else {
                 alert("상품등록 실패");
             }
@@ -274,7 +315,7 @@ const ProductInsertSection = () => {
                     addr2: ""
                 }));
                 mAddressSubRef.current.focus();
-            },
+            }
         }).open();
     };
 
@@ -291,24 +332,27 @@ const ProductInsertSection = () => {
 
     return (
         <ProductInsertSectionBlock>
-            <div className='title' style={{paddingTop: '30px'}}>
+            <div className='title' style={{ paddingTop: '30px' }}>
                 <img src="/src/assets/image/logo_color.png" alt="" />
             </div>
             <form onSubmit={onSubmit}>
                 <Slider ref={sliderRef} {...settings}>
-                    <div className='time'>
+                    <div className='time' data-aos="fade-up">
                         <div className='container'>
                             <div className='min_title'>
-                                <label htmlFor="category">방문하고자 하는 시간을<br/> 선택해주세요.</label>
+                                <label htmlFor="category">방문하고자 하는 시간을<br /> 선택해주세요.</label>
                             </div>
                             <div className='min_content'>
-                                <select name="category" id="category" value={product.category} onChange={handleChange}  onFocus={handleInputFocus} onBlur={handleInputBlur}>
-                                    <option value="no_select" disabled>방문 희망시간</option>
-                                    <option value="오전(8시~10시)">오전(8시~10시)</option>
-                                    <option value="오후(13시~15시)">오후(13시~15시)</option>
-                                    <option value="저녁(15시~17시)">저녁(15시~17시)</option>
-                                    <option value="언제든 가능">언제든 가능</option>
-                                </select>
+                                <div className="select-wrapper">
+                                    <select name="category" id="category" value={product.category} onChange={handleChange} onFocus={handleInputFocus} onBlur={handleInputBlur}>
+                                        <option value="no_select" disabled>방문시간 선택    </option>
+                                        <option value="오전(8시~10시)">오전(8시~10시)</option>
+                                        <option value="오후(13시~15시)">오후(13시~15시)</option>
+                                        <option value="저녁(15시~17시)">저녁(15시~17시)</option>
+                                        <option value="언제든 가능">언제든 가능</option>
+                                    </select>
+                                    <FaChevronDown className="select-icon" /> {/* Custom chevron icon */}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -325,7 +369,7 @@ const ProductInsertSection = () => {
                     <div className='address'>
                         <div className='container'>
                             <div className='min_title'>
-                                <label htmlFor="addr1">부름을 부르실 주소를<br/> 입력해주세요.</label>
+                                <label htmlFor="addr1">부름을 부르실 주소를<br /> 입력해주세요.</label>
                             </div>
                             <div className='min_content'>
                                 <div className='postNo'>
@@ -336,7 +380,7 @@ const ProductInsertSection = () => {
                                     <input type="text" name="addr1" id="addr1" value={product.addr1} onChange={handleChange} onClick={openDaumPostcode} readOnly placeholder='주소입력' />
                                 </div>
                                 <div className='addr2'>
-                                    <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={product.addr2}  onFocus={handleInputFocus} onBlur={handleInputBlur} onChange={handleChange} placeholder='층,동,호수 입력' />
+                                    <input type="text" name="addr2" id="addr2" ref={mAddressSubRef} value={product.addr2} onFocus={handleInputFocus} onBlur={handleInputBlur} onChange={handleChange} placeholder='층,동,호수 입력' />
                                 </div>
                             </div>
                         </div>
@@ -347,12 +391,15 @@ const ProductInsertSection = () => {
                                 <label htmlFor="homeType">건물의 유형을 선택해주세요.</label>
                             </div>
                             <div className='min_content'>
-                                <select name="homeType" id="homeType" value={product.homeType} onChange={handleChange}  onFocus={handleInputFocus} onBlur={handleInputBlur}>
-                                    <option value="no_select" disabled>선택</option>
-                                    <option value="다세대&#183;다가구">다세대&#183;다가구</option>
-                                    <option value="오피스텔&#183;도시형생활주택">오피스텔&#183;도시형생활주택</option>
-                                    <option value="아파트">아파트</option>
-                                </select>
+                                <div className="select-wrapper">
+                                    <select name="homeType" id="homeType" value={product.homeType} onChange={handleChange} onFocus={handleInputFocus} onBlur={handleInputBlur}>
+                                        <option value="no_select" disabled>선택</option>
+                                        <option value="다세대&#183;다가구">다세대&#183;다가구</option>
+                                        <option value="오피스텔&#183;도시형생활주택">오피스텔&#183;도시형생활주택</option>
+                                        <option value="아파트">아파트</option>
+                                    </select>
+                                    <FaChevronDown className="select-icon" /> {/* Custom chevron icon */}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -380,12 +427,12 @@ const ProductInsertSection = () => {
                     <div className="btn">
                         <div className='container'>
                             <div className='min_title'>
-                                <div style={{fontSize: '25px'}}>예상금액은 '{formatCurrency(totalPrice)}' 원 이에요. <br/> 접수를 등록하시겠어요?</div>
+                                <div style={{ fontSize: '25px' }}>예상금액은 '{formatCurrency(totalPrice)}' 원 이에요. <br /> 접수를 등록하시겠어요?</div>
                             </div>
                             <div className='min_content'>
-                                <button type="submit" onClick={()=>{alert("접수가 완료되었습니다.")}}>등록</button>
+                                <button type="submit">등록</button>
                             </div>
-                        </div>
+                        </div>  
                     </div>
                 </Slider>
             </form>

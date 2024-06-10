@@ -21,7 +21,7 @@ import MyOrderView from '@/views/product/MyOrderView'
 import ReservationView from '@/views/product/ReservationView';
 import SliderSection from './components/home/SliderSection';
 import QnAView from '@/views/qna/QnAView';
-
+import InsertComplete from '@/views/product/InsertComplete';
 
 const App = () => {
   return (
@@ -47,6 +47,7 @@ const App = () => {
         <Route path="/reservation" element={<ReservationView/>}/>
         <Route path="/slider" element={ <SliderSection /> } />
         <Route path="/qna" element={ <QnAView /> } />
+        <Route path="/InsertComplete" element={ <InsertComplete /> } />
       </Route>
     </Routes>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,11 +6,13 @@ import axios from 'axios';
 import { userLogin } from '@/store/member';
 import { fetchCart } from '@/store/product';
 import logo from '@/assets/image/join_logo.png';
+import AOS from "aos"
+import 'aos/dist/aos.css' ;
 
 const LoginSectionBlock = styled.div`
-    max-width: 400px;
+    max-width: 500px;
+    height: 600px;
     margin: 50px auto;
-    padding-top: 110px;
     text-align: center;
 
     h2 img {
@@ -22,6 +24,7 @@ const LoginSectionBlock = styled.div`
         flex-direction: column;
         gap: 15px;
         margin-top: 20px;
+        padding: 0 30px;
     }
 
     label {
@@ -61,6 +64,11 @@ const LoginSectionBlock = styled.div`
 `;
 
 const LoginSection = () => {
+    useEffect(() => {
+        AOS.init({
+        duration: 1000,
+        });
+    }, []);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [userId, setUserId] = useState("");
@@ -110,8 +118,8 @@ const LoginSection = () => {
 
     return (
         <LoginSectionBlock>
-            <h2><img src={logo} alt="logo" /></h2>
-            <form onSubmit={handleLogin}>
+            <h2 data-aos='fade-up'><img src={logo} alt="logo" /></h2>
+            <form onSubmit={handleLogin} data-aos='fade-up'>
                 <input ref={userIdRef} type="text" placeholder="아이디" onChange={(e) => setUserId(e.target.value)} />
                 <input ref={userPwRef} type="password" placeholder="비밀번호" onChange={(e) => setUserPw(e.target.value)} />
                 <button type="submit">로그인</button>
