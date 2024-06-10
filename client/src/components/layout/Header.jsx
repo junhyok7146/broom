@@ -181,17 +181,17 @@ const HeaderBlock = styled.div`
     width: 100%;
     box-shadow: 0 -5px 5px -5px #666;
     display: flex;
-    justify-content: space-between; /* NAV 양 끝에 아이템 배치 */
-    align-items: center; /* 가운데 정렬 */
-    padding: 0 1px; /* 좌우 여백 추가 */
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 0 10px 0 2px;
     
     .header__logo {
       padding: 5px 5px;
-      margin: 0; /* 여백 제거 */
+      margin: 0; 
       width: 80px;
       height: auto;
-      order: 1; /* 순서 변경 */
-      left:44%;
+      order: 1; 
+      left:42%;
       position:absolute;
     }
 

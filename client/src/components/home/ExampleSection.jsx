@@ -1,36 +1,35 @@
 import React,{useEffect} from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
-import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const SliderSection2Block = styled.div`
   margin: 50px auto;
-  padding: 0 20px;
+  padding: 0 0px;
   max-width: 1200px;
   text-align: center;
   height: 100vh;
+  overflow:hidden;
   .content{
     padding:300px 0;
   }
   .slick-arrow {
-    position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateX(-99999999%);
     font-size: 30px;
     color: black;
     background: transparent;
     z-index: 1;
-
+    
     &.slick-prev {
-      left: 0%;
-      border-bottom:1px solid #000;
+      left: 1%;
+
+
     }
 
     &.slick-next {
-      right: 0%;
-      border-bottom:1px solid #000;
+      right: 5.5%;
     }
   }
 
@@ -71,7 +70,7 @@ const SliderSection2Block = styled.div`
   }
 
   .slideBox {
-    
+    position:relative;
     .slick-slide > div {
 
       display: flex;
